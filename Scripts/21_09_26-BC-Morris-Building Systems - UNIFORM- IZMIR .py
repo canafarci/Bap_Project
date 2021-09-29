@@ -20,7 +20,9 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
                 bld_height, ver_to_hor, bld_density, waste_into_canyon, urban_area_length, road_albedo, sensible_anthropogenic_heat,
                 
                daytime_urban_boundary_height, nighttime_urban_boundary_height, circulation_coefficient, UCM_UBL_exchange_coefficient,
-               day_heatflux_treshold, night_heatflux_treshold):
+               day_heatflux_treshold, night_heatflux_treshold,
+               
+               vegetation_albedo, urban_tree_coverage, urban_grass_coverage):
     """Generate UWG json with custom reference BEMDef and SchDef objects."""
 
     
@@ -105,10 +107,10 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     
     model = UWG.from_param_args(
         epw_path=epw_path, bldheight=bld_height, blddensity=bld_density, vertohor=ver_to_hor, zone='3A',
-        treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
+        treecover=urban_tree_coverage, grasscover=urban_grass_coverage, bld=bld, ref_bem_vector=ref_bem_vector,
         ref_sch_vector=ref_sch_vector, month=7, day=10, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=300, albroad=road_albedo,
         new_epw_name="sensepw.epw",
-        charlength=urban_area_length, croad=2250000, albveg=0.25, vegend=10, vegstart=3, droad=1.25, kroad=0.8,
+        charlength=urban_area_length, croad=2250000, albveg=vegetation_albedo, vegend=10, vegstart=3, droad=1.25, kroad=0.8,
         maxday=day_heatflux_treshold, maxnight=night_heatflux_treshold, h_ubl1=daytime_urban_boundary_height, h_ubl2=nighttime_urban_boundary_height, h_mix=waste_into_canyon,
         c_circ=circulation_coefficient, c_exch=UCM_UBL_exchange_coefficient)
     
@@ -121,14 +123,16 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     model.write_epw()
 
 problem = {
-    'num_vars': 23,
+    'num_vars': 26,
     'names': ['glazing_ratio', 'wall_u_value', 'window_u_value', 'window_sghc', 'infiltration_rate', 'chiller_cop', 
               'indoor_temp_set_point', 'equipment_load_density', 'lighting_load_density', 'occupancy_density', 
 
               'bld_height', 'ver_to_hor', 'bld_density', 'waste_into_canyon', 'urban_area_length', 'road_albedo', 'sensible_anthropogenic_heat',
 
               'daytime_urban_boundary_height', 'nighttime_urban_boundary_height', 'circulation_coefficient', 'UCM_UBL_exchange_coefficient', 
-              'day_heatflux_treshold', 'night_heatflux_treshold'],
+              'day_heatflux_treshold', 'night_heatflux_treshold',
+              
+              'urban_grass_coverage', 'urban_tree_coverage', 'vegetation_albedo'],
               
     'bounds': [[0.05, 0.4],       #glazing_ratio
                [0.9125, 7.3],       #wall_u_value
@@ -140,6 +144,7 @@ problem = {
                [2.5, 7.5],    #equipment_load_density
                [2.5, 7.5],    #lighting_load_density
                [25, 60],  # occupancy_density
+
                [30, 40],  # bld_height
                [1.5, 4],  # ver_to_hor
                [0.15, 0.35],  # bld_density
@@ -153,11 +158,15 @@ problem = {
                [0.8, 1.2],  # circulation_coefficient
                [0.1, 0.9],  # UCM_UBL_exchange_coefficient
                [150, 250],  # day_heatflux_treshold
-               [40, 60]]  # night_heatflux_treshold
+               [40, 60],  # night_heatflux_treshold
+
+               [0, 0.1],  # urban_grass_coverage
+               [0, 0.1],  # urban_tree_coverage
+               [0.2, 0.3]]  # vegetation_albedo
 }
 
 # sample        
-X = _morris.sample(problem, 1000, num_levels=4)
+X = _morris.sample(problem, 16, num_levels=4)
 
 
 max_length = len(X)
@@ -207,7 +216,8 @@ def evaluate_epw():
                        #urban characteristics
                        float(params[10]), float(params[11]), float(params[12]), float(params[13]), float(params[14]),float(params[15]), float(params[16]),
                        #meteorological factors
-                       float(params[17]), float(params[18]), float(params[19]), float(params[20]), float(params[21]), float(params[22])
+                       float(params[17]), float(params[18]), float(params[19]), float(params[20]), float(params[21]), float(params[22]),
+                       float(params[23]), float(params[24]), float(params[25])
                         )
             pd_epw_sens, _ = pvlib.iotools.read_epw(
                 base_path + "data\\sensepw.epw")
@@ -244,7 +254,7 @@ Y = evaluate_epw()
 #Y = np.loadtxt(base_path + "txtexport\\izmir_morris.txt")
 
                         #"txtexport\\izmir_morris.txt"
-np.savetxt(base_path + "txtexport\\izmir_morris_23.txt", Y)
+np.savetxt(base_path + "txtexport\\izmir_morris_26.txt", Y)
 
 # analyse
 Si = morris.analyze(
@@ -261,11 +271,11 @@ data = {'Iteration': iteration_list, 'glazing_ratio': glazing_ratio_list, 'wall_
 df = pd.DataFrame(data) 
 
 
-df.to_csv(base_path + "csvexport\\izmir_morris_3a.csv")
+df.to_csv(base_path + "csvexport\\izmir_morris_26.csv")
 
 
 lines = [str(Si)]
-with open(base_path + 'txtexport\\11k_izmir_morris_3a.txt', 'w') as f:
+with open(base_path + 'txtexport\\11k_izmir_morris_26.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
