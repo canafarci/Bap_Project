@@ -110,7 +110,7 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     model = UWG.from_param_args(
         epw_path=epw_path, bldheight=bld_height, blddensity=bld_density, vertohor=ver_to_hor, zone='3A',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
-        ref_sch_vector=ref_sch_vector, month=7, day=10, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=300, albroad=road_albedo,
+        ref_sch_vector=ref_sch_vector, month=7, day=10, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=120, albroad=road_albedo,
         new_epw_name="sensepw.epw",
         charlength=urban_area_length,  albveg=0.3, vegend=10, vegstart=3, droad=urban_road_thickness, kroad=urban_road_thermal_conductivity,
         croad=urban_road_volumetric_heat_capacity
@@ -139,19 +139,19 @@ problem = {
               
     'bounds': [[0.05, 0.4],       #glazing_ratio
                [0.9125, 7.3],       #wall_u_value
-               [0.9, 2.8],    #window_u_value
-               [0.39, 0.56],     #window_sghc
-               [1.0, 1.5],       #infiltration_rate
+               [0.6, 2.9],    #window_u_value
+               [0.39, 0.75],     #window_sghc
+               [0.1, 0.7],       #infiltration_rate
                [2.6, 4],      #chiller_cop
                [18, 26],    #indoor_temp_set_point
                [2.5, 7.5],    #equipment_load_density
                [2.5, 7.5],    #lighting_load_density
                [25, 60],  # occupancy_density
 
-               [10, 40],  # bld_height
-               [1.5, 4],  # ver_to_hor
-               [0.15, 0.35],  # bld_density
-               [1200000, 2250000],  # urban_road_volumetric_heat_capacity
+               [10, 60],  # bld_height
+               [0.48, 1.55],  # ver_to_hor
+               [0.15, 0.35],  # bld_density --------
+               [1200000, 2250000],  # urban_road_volumetric_heat_capacity ----
                [800, 1200],  # urban_area_length
                [0.085, 0.245],  # road_albedo
                [15, 25],  # sensible_anthropogenic_heat
@@ -173,7 +173,7 @@ problem = {
 }
 
 # sample        
-X = _morris.sample(problem, 16, num_levels=4)
+X = _morris.sample(problem, 256, num_levels=4)
 
 
 max_length = len(X)
@@ -264,7 +264,8 @@ Y = evaluate_epw()
 #Y = np.loadtxt(base_path + "txtexport\\izmir_morris.txt")
 
                         #"txtexport\\izmir_morris.txt"
-np.savetxt(base_path + "txtexport\\izmir_morris_9-29.txt", Y)
+                        #_izmir_morris_9-29
+np.savetxt(base_path + "txtexport\\128_izmir_morris_9-29.txt", Y)
 
 # analyse
 Si = morris.analyze(
@@ -285,7 +286,7 @@ df.to_csv(base_path + "csvexport\\izmir_morris_9-29.csv") """
 
 
 lines = [str(Si)]
-with open(base_path + 'txtexport\\11k_izmir_morris_9-29.txt', 'w') as f:
+with open(base_path + 'txtexport\\128_izmir_morris_9-29.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')

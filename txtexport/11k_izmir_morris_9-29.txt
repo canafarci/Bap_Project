@@ -1,21 +1,16 @@
-{'names': ['glazing_ratio', 'wall_u_value', 'window_u_value', 'window_sghc', 'infiltration_rate', 'chiller_cop', 'indoor_temp_set_point', 'equipment_load_density', 'lighting_load_density', 'occupancy_density', 'bld_height', 'ver_to_hor', 'bld_density', 'urban_road_volumetric_heat_capacity', 'urban_area_length', 'road_albedo', 'sensible_anthropogenic_heat', 'urban_road_thermal_conductivity', 'urban_road_thickness', 'wall_albedo', 'roof_albedo', 'wall_emissivity', 'roof_emissivity', 'roof_vegetation_coverage', 'floor_height', 'ventilation_rate'], 'mu': array([ 0.06969866, -0.20055804,  0.00691964,  0.00133929,  0.01752232,
+{'names': ['glazing_ratio', 'wall_u_value', 'window_u_value', 'window_sghc', 'infiltration_rate', 'chiller_cop', 'indoor_temp_set_point', 'equipment_load_density', 'lighting_load_density', 'occupancy_density', 'bld_height', 'ver_to_hor', 'bld_density', 'urban_road_volumetric_heat_capacity', 'urban_area_length', 'road_albedo', 'sensible_anthropogenic_heat', 'urban_road_thermal_conductivity', 'urban_road_thickness', 'wall_albedo', 'roof_albedo', 'wall_emissivity', 'roof_emissivity', 'roof_vegetation_coverage', 'floor_height', 'ventilation_rate'], 
+
+
+'mu': array([ 0.06969866, -0.20055804,  0.00691964,  0.00133929,  0.01752232,
        -0.02165179, -0.20842634,  0.02756696,  0.01467634, -0.00284598,
         0.096875  ,  0.00909598,  0.07645089, -0.02232143,  0.00641741,
        -0.0016183 ,  0.00647321, -0.03649554,  0.02561384,  0.03125   ,
        -0.00122768, -0.0297433 , -0.03108259, -0.00256696, -0.04821429,
-        0.        ]), 'mu_star': masked_array(data=[0.0993861607142853, 0.20055803571428454,
-                   0.007589285714287519, 0.001339285714285876,
-                   0.018303571428572196, 0.021651785714285054,
-                   0.2084263392857132, 0.027566964285713813,
-                   0.014899553571429913, 0.003627232142855652,
-                   0.09687500000000049, 0.06434151785714282,
-                   0.07645089285714213, 0.022321428571426827,
-                   0.009654017857141595, 0.00496651785714286,
-                   0.009263392857143948, 0.036495535714283545,
-                   0.025613839285712592, 0.048214285714286875,
-                   0.0017857142857139463, 0.029743303571429403,
-                   0.03108258928571561, 0.0041294642857161445,
-                   0.04821428571428521, 0.0],
+        0.        ]), 
+
+
+
+'mu_star': masked_array(data=[0.0993861607142853, 0.20055803571428454, 0.007589285714287519, 0.001339285714285876, 0.018303571428572196, 0.021651785714285054, 0.2084263392857132, 0.027566964285713813, 0.014899553571429913, 0.003627232142855652, 0.09687500000000049, 0.06434151785714282, 0.07645089285714213, 0.022321428571426827, 0.009654017857141595, 0.00496651785714286, 0.009263392857143948, 0.036495535714283545, 0.025613839285712592, 0.048214285714286875, 0.0017857142857139463, 0.029743303571429403, 0.03108258928571561, 0.0041294642857161445, 0.04821428571428521, 0.0],
              mask=[False, False, False, False, False, False, False, False,
                    False, False, False, False, False, False, False, False,
                    False, False, False, False, False, False, False, False,
