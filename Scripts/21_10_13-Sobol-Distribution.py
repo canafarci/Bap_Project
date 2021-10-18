@@ -48,7 +48,7 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     schdef1 = SchDef(elec=elec_week, gas=default_week, light=light_week,
                      occ=occ_week, cool=cool_week, heat=heat_week,
                      q_elec=equipment_load_density, q_gas=3.2, q_light=lighting_load_density,
-                     n_occ=(1 / occupancy_density), vent=0.001 * 0.2, bldtype='midriseapartment',
+                     n_occ=(occupancy_density), vent=0.001 * 0.2, bldtype='midriseapartment',
                      builtera='pre80')
     
     ###-----------------------------------------------------------------------------------------
@@ -57,25 +57,39 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
 
     # MATERIAL PARAMETERS ------------------------------------------------------------------------------------------------
     
-    press_brick = Material(0.73, 900 * 2240, 'press_brick') # 1.1116299705    - 0.21 --- 0.132045 ||| 0.5 ---0.561214
-    brick = Material(0.33, 900 * 600, 'brick') 
-    plaster = Material(0.51, 1090 * 1200, 'plaster')
-
+    mineral_plaster = Material(0.54, 1300 * 900, 'mineral_plaster')
+    
+    
+    cement_plaster = Material(0.721, 1762 * 840, 'cement_plaster') # 1.1116299705    - 0.21 --- 0.132045 ||| 0.5 ---0.561214
+    eps = Material(0.035, 22 * 1400, 'eps')
+    brick_wall = Material(0.33, 900 * 600, 'brick_wall') 
+    
+    gypsum_plaster = Material(0.51, 1200 * 840, 'gypsum_plaster')
+    
+    
+    
+    
+    
+    glasswool = Material(0.04, 18 * 670, 'glasswool')
+    
     gravel = Material(0.36, 840 * 1840, 'gravel')
     waterproofing = Material(0.19, 780 * 3000, 'waterproofing')
-    levelling_concrete = Material(0.3, 840 * 2200, 'levelling_concrete')
-    concrete_slab = Material(2.5, 840 * 2400, 'concrete_slab')
+    
+    reinforced_concrete = Material(2.5, 840 * 2400, 'reinforced_concrete')
 
 
     ###-------------------------------------------------------------------------------------------------------------------
 
-
+    if roof_u_value < 0.01:
+        roof_u_value = 0.01
+    if wall_u_value < 0.01:
+        wall_u_value = 0.01
     
     # ELEMENT PARAMETERS ---------------------------------------------------------------------------
     
-    wall = Element(wall_albedo, wall_emissivity, [wall_u_value, 0.09, 0.24, 0.025],  [plaster, press_brick, brick, plaster], 0, 296, False, 'common_brick_wall_with_plaster')
-    roof = Element(roof_albedo, roof_emissivity, [5, 0.003, 0.04, 0.2, roof_u_value], [gravel, waterproofing, levelling_concrete, concrete_slab, plaster], roof_vegetation_coverage, 296, True, 'tile')
-    mass = Element(0.20, 0.90, [0.15, 0.15], [concrete_slab, concrete_slab], 0, 296, True, 'concrete_floor')
+    wall = Element(wall_albedo, wall_emissivity, [0.002, 0.03, wall_u_value, 0.135, 0.02],  [mineral_plaster, cement_plaster, eps, brick_wall, gypsum_plaster], 0, 296, False, 'common_brick_wall_with_plaster')
+    roof = Element(roof_albedo, roof_emissivity, [roof_u_value, 0.12, 0.02], [glasswool, reinforced_concrete, gypsum_plaster], roof_vegetation_coverage, 296, True, 'tile')
+    mass = Element(0.20, 0.90, [0.15, 0.15], [reinforced_concrete, reinforced_concrete], 0, 296, True, 'concrete_floor')
 
     ### ---------------------------------------------------------------------------------------------
 
@@ -112,7 +126,7 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     model = UWG.from_param_args(
         epw_path=epw_path, bldheight=bld_height, blddensity=bld_density, vertohor=ver_to_hor, zone='3A',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
-        ref_sch_vector=ref_sch_vector, month=7, day=10, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=120, albroad=road_albedo,
+        ref_sch_vector=ref_sch_vector, month=7, day=10, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=150, albroad=road_albedo,
         new_epw_name="sensepw.epw",
         charlength=urban_area_length,  albveg=0.3, vegend=10, vegstart=3, droad=urban_road_thickness, kroad=urban_road_thermal_conductivity,
         croad=urban_road_volumetric_heat_capacity
@@ -139,40 +153,44 @@ problem = {
               'wall_albedo', 'roof_albedo', 'wall_emissivity', 'roof_emissivity', 'roof_vegetation_coverage', #5
               'floor_height', 'ventilation_rate', 'roof_u_value'],  #2
               
-    'bounds': [[0.05, 0.4],       #glazing_ratio
-               [0.561214, 1.96979],       #wall_u_value 0.21 --- 1.96979 || 1.087 --- 0.01
-               [0.01, 2.9],    #window_u_value
-               [0.39, 0.75],     #window_sghc
-               [0.1, 0.7],       #infiltration_rate
-               [2.6, 4],      #chiller_cop
-               [18, 26],    #indoor_temp_set_point
-               [2.5, 7.5],    #equipment_load_density
-               [2.5, 7.5],    #lighting_load_density
-               [25, 60],  # occupancy_density
+    'bounds': [[0.235, 0.074],       #glazing_ratio
+               [27.5, 11.4],       #wall_u_value
+               [0.7, 0.222],    #window_u_value
+               [0.59, 0.08],     #window_sghc
+               [-0.43, 0.802],       #infiltration_rate
+               [4.45, 0.85],      #chiller_cop
+               [27, 1.2],    #indoor_temp_set_point
+               [1.8, 0.4],    #equipment_load_density
+               [1.9, 0.3],    #lighting_load_density
+               [0.26, 0.1],  # occupancy_density ---- 10
 
-               [10, 60],  # bld_height
-               [0.48, 1.55],  # ver_to_hor
-               [0.15, 0.35],  # bld_density --------
-               [1200000, 2250000],  # urban_road_volumetric_heat_capacity ----
-               [800, 1200],  # urban_area_length
-               [0.085, 0.245],  # road_albedo
-               [15, 25],  # sensible_anthropogenic_heat
+               [2.5, 0.7],  # bld_height
+               [0.62, 0.5],  # ver_to_hor
+               [0.45, 0.105],  # bld_density --------
+               [1960371 , 300000],  # urban_road_volumetric_heat_capacity ----
+               [1000, 100],  # urban_area_length  ---- 15
+               [0.1776, 0.024],  # road_albedo
+               [7, 1.2],  # sensible_anthropogenic_heat
 
-               [0.8, 2],  # urban_road_thermal_conductivity
-               [0.25, 0.75],  # urban_road_thickness
+               [1.955, 0.4],  # urban_road_thermal_conductivity
+               [0.3302, 0.05175],  # urban_road_thickness
 
 
-               [0, 1],  # wall_albedo
-               [0, 1],  # roof_albedo
-               [0, 1],  # wall_emissivity
-               [0, 1],  #roof_emissivity
-               [0, 1],   #roof_vegetation_coverage
+               [0.5, 0.07],  # wall_albedo ----- 20
+               [0.5, 0.07],  # roof_albedo
+               [0.475, 0.18],  # wall_emissivity
+               [0.475, 0.18],  #roof_emissivity
+               [0.5, 0.18],   #roof_vegetation_coverage
                
-               [2.5, 4],  #floor_height
-               [0.001 , 0.010],   #ventilation_rate
-               [0.0880 , 0.118]   #roof_u_value  0.118 - 0.0880
+               [1.1, 0.062],  #floor_height
+               [-0.03 , 0.222],   #ventilation_rate
+               [74.5, 31.5]   #roof_u_value  0.118 - 0.0880
                
-               ]  
+               ],
+    
+    'dists':['norm', 'norm', 'lognorm', 'norm', 'lognorm', 'norm', 'norm', 'lognorm', 'lognorm', 'norm',
+             'lognorm', 'lognorm', 'norm', 'norm', 'norm', 'norm', 'norm', 'norm', 'norm', 'norm',
+             'norm', 'norm', 'norm', 'norm', 'norm', 'lognorm', 'norm' ]  
 }
 
 # sample        
@@ -242,6 +260,10 @@ def evaluate_epw():
                 temp_list[j] = pd_epw_sens['temp_air'].values[i]
                 j+= 1
                 
+                #HDD = if temperature is lesser than 18.3C ,  max(0, 18.3 - t)
+                #CDD =if temperature is bigger than 23.3 ,  max (0, t-23.3)
+                #use hourly instead of daily method
+                
             y[k] = np.average(temp_list)
             
             simulation_result_list.append(np.average(temp_list))
@@ -268,7 +290,7 @@ Y = evaluate_epw()
 
                         #"txtexport\\izmir_morris.txt"
                         #_izmir_morris_9-29
-np.savetxt(base_path + "txtexport\\sobol-27.txt", Y)
+np.savetxt(base_path + "txtexport\\sobol-dists-27.txt", Y)
 
 # analyse
 Si = sobol.analyze(problem, Y)
@@ -288,7 +310,7 @@ df.to_csv(base_path + "csvexport\\izmir_morris_9-29.csv") """
 
 
 lines = [str(Si)]
-with open(base_path + 'txtexport\\sobol-27-results.txt', 'w') as f:
+with open(base_path + 'txtexport\\sobol-dists-27-results.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
