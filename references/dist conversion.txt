@@ -1,0 +1,21 @@
+###############LOGNORMAL CONVERSION#################
+
+SALib = lognorm(mu, sigma) -----> Sensivity distributionları için
+
+SCipy (python fitterin kullandıgı alt kutuphane) = (s, loc, scale)  -------> python fitterdan aldıgımız lognormal outputları
+
+s = sigma ------> fitterin sonucu, scipydan gelen birimle
+
+scale = exp(mu)  -------> mu yu hesaplamak için wolfram alpha kullan
+
+
+#############FINISHED DISTRIBUTIONS###############
+
+
+glazing_ratio= lognormal(-1.4625990497818486, 0.40021934542099846) %1 - 0.09, %99 - 0.58 #              -- 120mm - 3800mm
+floor_height = lognormal(1.0591098498555607, 0.04115544731188791) %1 - 2.62, %99 - 3.17 #
+building_height = lognormal(2.7163131228955497, 0.3496441117151827) %1 - 6.70, %99 - 34.114 #
+wall_u = lognormal(-0.3018775922877328, 0.5926645836235634) %1 - 0.18, %99 - 2.93#
+roof_u  lognormal((-0.7710103891113457, 0.46428432830715555), %1 - 0.157, %99 - 1.362 #
+window_u = lognormal(0.965289171455054, 0.1872993061457852), %1 - 1.69, %99 - 4.059
+shgc = lognormal(-0.5199543045556787, 0.14381031038927952), %1 - 0.42, %99 - 0.83
