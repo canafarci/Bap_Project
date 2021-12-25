@@ -35,7 +35,7 @@ def custom_uwg():
     # building
     bldg = Building(
         floor_height=2.6, int_heat_night=1, int_heat_day=1, int_heat_frad=1,
-        int_heat_flat=1, infil=0.5, vent=0.001 * 0.2, glazing_ratio=0.6, u_value=2,
+        int_heat_flat=1, infil=0.5, vent=0.001 * 0.2, glazing_ratio=0.1, u_value=2,
         shgc=0.3, condtype='AIR', cop=3, coolcap=41, heateff=82, initial_temp=300)
 
     bemdef1 = BEMDef(building=bldg, mass=mass, wall=wall, roof=roof, bldtype='midriseapartment', builtera='pst80')

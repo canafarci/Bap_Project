@@ -41,7 +41,7 @@ def custom_uwg():
     # ELEMENT PARAMETERS ---------------------------------------------------------------------------
     
     wall = Element(0.35, 0.90, [0.02, 0.15, 0.2, 0.01], [wallmtl, wallmt2, wallmt3,wallmt4], 0, 296, False, 'common_brick_wall_with_plaster')
-    roof = Element(0.25, 0.95, [0.025, 0.025], [roofmtl, roofmtl], 0, 296, True, 'tile')
+    roof = Element(0.25, 0.95, [0.025, 20], [roofmtl, roofmtl], 0, 296, True, 'tile')
     mass = Element(0.20, 0.90, [0.15, 0.15], [roofmt2, roofmt2], 0, 296, True, 'concrete_floor')
 
     ### ---------------------------------------------------------------------------------------------
