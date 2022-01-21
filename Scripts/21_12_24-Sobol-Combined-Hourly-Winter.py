@@ -294,7 +294,7 @@ problem = {
 
 #endregion
 
-param_values = saltelli.sample(problem, 1024) #1400
+param_values = saltelli.sample(problem, 256) #1400
 
 #region CSV index lists definition -------------------------
 max_length = len(param_values)
@@ -436,7 +436,7 @@ def evaluate_epw():
             pd_epw_sens, _ = pvlib.iotools.read_epw(
                     base_path + "data\\SIMULATION.epw")
                     
-            indexes =  range(5473, 5642)
+            indexes =  range(8521, 8521 + 168)
             
             day_1_indexes = range(8521, 8521 + 24)
             day_2_indexes = range(8521 + 24, 8521 + 48)
@@ -505,7 +505,7 @@ def evaluate_epw():
                 #print("-------------------------------")
                 for b in range(0, 24):
                     #print(str(b) + "  " + str((24 * h) + b + 5473))
-                    all_y_indexes[b][k][h] =  pd_epw_sens['temp_air'].values[(24 * h) + b + 5473].astype(float).item()
+                    all_y_indexes[b][k][h] =  pd_epw_sens['temp_air'].values[(24 * h) + b + 8521].astype(float).item()
                     #print(pd_epw_sens['temp_air'].values[(24 * h) + b + 5473].astype(float).item())
                     #print(all_y_indexes[b])
                 

@@ -312,6 +312,7 @@ def evaluate_epw():
             print(temperature_min_list)
                     
             y[k] = np.average(temp_list)
+            
             hdd_y[k] = np.sum(hdd_list)
             cdd_y[k] = np.sum(cdd_list)
             hdd_10_y[k] = np.sum(hdd_10_list)
