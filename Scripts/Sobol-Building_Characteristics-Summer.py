@@ -187,9 +187,9 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     model = UWG.from_param_args(
         epw_path = epw_path, bldheight = 20, blddensity = 0.49, vertohor = 0.41, zone = '4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
-        ref_sch_vector=ref_sch_vector, month=8, day=17, sensanth=19.995, nday=7, dtsim=200, albroad=0.20,
+        ref_sch_vector=ref_sch_vector, month=8, day=17,  nday=7, dtsim=200,
         new_epw_name="SIMULATION1.epw",
-        charlength=500,  albveg=0.3, vegend=10, vegstart=3, droad=1.25, kroad=0.8, croad=1961490, albroad=0.233, sensanth=19.995, kroad=1.9525
+        charlength=500, vegend=10, vegstart=3, droad=1.25, croad=1961490, albroad=0.233, sensanth=19.995, kroad=1.9525
         )
 
     ###---------------------------------------------------------------------------------------------------------------
