@@ -9,6 +9,8 @@ import pvlib
 import numpy as np
 import pandas as pd
 
+#18 JANUARY
+#3 FEBRUARY
 
 base_path = "E:\\ARCHIVE\\BAP\\__Project\\"
 
@@ -121,7 +123,7 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
                   [0.067, 0.067, 0.067, 0.067, 0.187, 0.394, 0.44, 0.393, 0.172, 0.119, 0.119, 0.119, 0.119, 0.119, 0.119, 0.206, 0.439, 0.616, 0.829, 0.986, 1, 0.692, 0.384, 0.16],
                   [0.067, 0.067, 0.067, 0.067, 0.187, 0.394, 0.44, 0.393, 0.172, 0.119, 0.119, 0.119, 0.119, 0.119, 0.119, 0.206, 0.439, 0.616, 0.829, 0.986, 1, 0.692, 0.384, 0.16]]
 
-    cool_week = [[24] * 24] * 3
+    cool_week = [[22] * 24] * 3
 
     heat_week = [[indoor_temp_set_point] * 24] * 3
 
@@ -185,11 +187,11 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     # UWG PARAMETERS ------------------------------------------------------------------------------------------------
 
     model = UWG.from_param_args(
-        epw_path=epw_path, bldheight=20, blddensity=0.49, vertohor=0.41, zone='4B',
+        epw_path = epw_path, bldheight = 13.385, blddensity = 0.385, vertohor = 1.302, zone = '4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
-        ref_sch_vector=ref_sch_vector, month=12, day=22,  nday=7, dtsim=200,
-        new_epw_name="SIMULATION3.epw",
-        charlength=500,  vegend=10, vegstart=3, droad=1.25, croad=1961490, albroad=0.233, sensanth=19.995, kroad=1.9525
+        ref_sch_vector=ref_sch_vector, month=2, day=3,  nday=7, dtsim=200,
+        new_epw_name="SIMULATION2.epw",
+        charlength=500, vegend=10, vegstart=3, droad=1.25, croad=1960371, albroad=0.233, sensanth=20, kroad=1.955
         )
 
     ###---------------------------------------------------------------------------------------------------------------
@@ -245,7 +247,7 @@ problem = {
 #endregion
 
 # sample
-param_values = saltelli.sample(problem, 2300) #2653
+param_values = saltelli.sample(problem, 2300) #2300
 
 #region CSV index lists definition -------------------------
 max_length = len(param_values)
@@ -313,17 +315,17 @@ def evaluate_epw():
                         float(params[15])
                             )
             pd_epw_sens, _ = pvlib.iotools.read_epw(
-                    base_path + "data\\SIMULATION3.epw")
+                    base_path + "data\\SIMULATION2.epw")
 
-            indexes =  range(8521, 8521 + (7 * 24))
+            indexes =  range(793, 793 + (7 * 24))
             
-            day_1_indexes = range(8521, 8521 + 24)
-            day_2_indexes = range(8521 + 24, 8521 + 48)
-            day_3_indexes = range(8521 + 48, 8521 + 72)
-            day_4_indexes = range(8521 + 72, 8521 + 96)
-            day_5_indexes = range(8521 + 96, 8521 + 120)
-            day_6_indexes = range(8521 + 120, 8521 + 144)
-            day_7_indexes = range(8521 + 144, 8521 + 168)
+            day_1_indexes = range(793, 793 + 24)
+            day_2_indexes = range(793 + 24, 793 + 48)
+            day_3_indexes = range(793 + 48, 793 + 72)
+            day_4_indexes = range(793 + 72, 793 + 96)
+            day_5_indexes = range(793 + 96, 793 + 120)
+            day_6_indexes = range(793 + 120, 793 + 144)
+            day_7_indexes = range(793 + 144, 793 + 168)
 
             all_day_indexes = [day_1_indexes, day_2_indexes, day_3_indexes, day_4_indexes, day_5_indexes, day_6_indexes, day_7_indexes]
 
@@ -424,12 +426,6 @@ def evaluate_epw():
 
 Y, HDD_Y, CDD_Y, HDD_10_Y = evaluate_epw()
 
-#Y = np.loadtxt(base_path + "txtexport\\izmir_morris.txt")
-
-                        #"txtexport\\izmir_morris.txt"
-                        #_izmir_morris_9-29
-#np.savetxt(base_path + "txtexport\\sobol-building_characteristics-1-24-NUMPY.txt", Y)
-
 # analyse
 Si_Temp = sobol.analyze(problem, Y)
 Si_CDD = sobol.analyze(problem, CDD_Y)
@@ -466,11 +462,11 @@ data = {    'glazing_ratio': glazing_ratio_list,
 df = pd.DataFrame(data)
 
 
-df.to_csv(base_path + "csvexport\\sobol-building_characteristics-10-2-bc-w.csv")
+df.to_csv(base_path + "csvexport\\sobol-weekly-2-28-bc-w.csv")
 
 
 lines = [str(Si_Temp), str(Si_CDD), str(Si_HDD)]
-with open(base_path + 'txtexport\\sobol-building_characteristics-10-2-bc-w.txt', 'w') as f:
+with open(base_path + 'txtexport\\sobol-weekly-2-28-bc-w.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')

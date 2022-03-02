@@ -119,9 +119,9 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
                   [0.067, 0.067, 0.067, 0.067, 0.187, 0.394, 0.44, 0.393, 0.172, 0.119, 0.119, 0.119, 0.119, 0.119, 0.119, 0.206, 0.439, 0.616, 0.829, 0.986, 1, 0.692, 0.384, 0.16],
                   [0.067, 0.067, 0.067, 0.067, 0.187, 0.394, 0.44, 0.393, 0.172, 0.119, 0.119, 0.119, 0.119, 0.119, 0.119, 0.206, 0.439, 0.616, 0.829, 0.986, 1, 0.692, 0.384, 0.16]]
 
-    cool_week = [[indoor_temp_set_point] * 24] * 3
+    cool_week = [[22] * 24] * 3
 
-    heat_week = [[23] * 24] * 3
+    heat_week = [[indoor_temp_set_point] * 24] * 3
 
 
     schdef1 = SchDef(elec=elec_week, gas=default_week, light=light_week,
@@ -191,11 +191,11 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     # UWG PARAMETERS ------------------------------------------------------------------------------------------------
     
     model = UWG.from_param_args(
-        epw_path = epw_path, bldheight = 20, blddensity = 0.49, vertohor = 0.41, zone = '4B',
+        epw_path = epw_path, bldheight = 13.385, blddensity = 0.385, vertohor = 1.302, zone = '4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
-        ref_sch_vector=ref_sch_vector, month=12, day=22,  nday=7, dtsim=200,
-        new_epw_name="SIMULATION2.epw",
-        charlength=500, vegend=10, vegstart=3, droad=1.25, croad=1961490, albroad=0.233, sensanth=19.995, kroad=1.9525
+        ref_sch_vector=ref_sch_vector, month=2, day=3,  nday=7, dtsim=200,
+        new_epw_name="SIMULATION4.epw",
+        charlength=500, vegend=10, vegstart=3, droad=1.25, croad=1960371, albroad=0.233, sensanth=20, kroad=1.955
         )
 
     ###---------------------------------------------------------------------------------------------------------------
@@ -364,17 +364,17 @@ def evaluate_epw():
                         )
             
             pd_epw_sens, _ = pvlib.iotools.read_epw(
-                    base_path + "data\\SIMULATION2.epw")
+                    base_path + "data\\SIMULATION4.epw")
                     
-            indexes =  range(8521, 8521 + (7 * 24))
+            indexes =  range(793, 793 + (7 * 24))
             
-            day_1_indexes = range(8521, 8521 + 24)
-            day_2_indexes = range(8521 + 24, 8521 + 48)
-            day_3_indexes = range(8521 + 48, 8521 + 72)
-            day_4_indexes = range(8521 + 72, 8521 + 96)
-            day_5_indexes = range(8521 + 96, 8521 + 120)
-            day_6_indexes = range(8521 + 120, 8521 + 144)
-            day_7_indexes = range(8521 + 144, 8521 + 168)
+            day_1_indexes = range(793, 793 + 24)
+            day_2_indexes = range(793 + 24, 793 + 48)
+            day_3_indexes = range(793 + 48, 793 + 72)
+            day_4_indexes = range(793 + 72, 793 + 96)
+            day_5_indexes = range(793 + 96, 793 + 120)
+            day_6_indexes = range(793 + 120, 793 + 144)
+            day_7_indexes = range(793 + 144, 793 + 168)
             
             all_day_indexes = [day_1_indexes, day_2_indexes, day_3_indexes, day_4_indexes, day_5_indexes, day_6_indexes, day_7_indexes]
             
@@ -433,7 +433,7 @@ def evaluate_epw():
                     
             for h in range(0,7):
                 for b in range(0, 24):
-                    all_y_indexes[b][k][h] =  pd_epw_sens['temp_air'].values[(24 * h) + b + 8521].astype(float).item()
+                    all_y_indexes[b][k][h] =  pd_epw_sens['temp_air'].values[(24 * h) + b + 793].astype(float).item()
                 
             hdd_y[k] = np.sum(hdd_list)
             cdd_y[k] = np.sum(cdd_list)
@@ -532,7 +532,7 @@ data = {
             } 
 
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-bc-winter-21-2-S1.csv")
+df.to_csv(base_path + "csvexport\\sobol-hourly-2-28-bc-w-S1.csv")
    
 for k in range(0, 24):
     for l in range(0, 16):
@@ -560,7 +560,7 @@ data = {
             } 
 
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-bc-winter-21-2-ST.csv")
+df.to_csv(base_path + "csvexport\\sobol-hourly-2-28-bc-w-ST.csv")
 
 
 Si_CDD = sobol.analyze(problem, CDD_Y)
@@ -570,7 +570,7 @@ Si_HDD10 = sobol.analyze(problem, HDD_10_Y)
 #print(str(Si_Temp))
 
 lines = [str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10)]
-with open(base_path + 'txtexport\\sobol-hourly-bc-winter-21-2.txt', 'w') as f:
+with open(base_path + 'txtexport\\sobol-hourly-2-28-bc-w.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
@@ -607,4 +607,4 @@ data = {
             } 
  
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-bc-winter-21-2.csv")
+df.to_csv(base_path + "csvexport\\sobol-hourly-2-28-bc-w.csv")

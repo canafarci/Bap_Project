@@ -185,11 +185,11 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     # UWG PARAMETERS ------------------------------------------------------------------------------------------------
 
     model = UWG.from_param_args(
-        epw_path = epw_path, bldheight = 20, blddensity = 0.49, vertohor = 0.41, zone = '4B',
+        epw_path = epw_path, bldheight = 13.385, blddensity = 0.385, vertohor = 1.302, zone = '4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
         ref_sch_vector=ref_sch_vector, month=8, day=17,  nday=7, dtsim=200,
         new_epw_name="SIMULATION1.epw",
-        charlength=500, vegend=10, vegstart=3, droad=1.25, croad=1961490, albroad=0.233, sensanth=19.995, kroad=1.9525
+        charlength=500, vegend=10, vegstart=3, droad=1.25, croad=1960371, albroad=0.233, sensanth=20, kroad=1.955
         )
 
     ###---------------------------------------------------------------------------------------------------------------
@@ -424,12 +424,6 @@ def evaluate_epw():
 
 Y, HDD_Y, CDD_Y, HDD_10_Y = evaluate_epw()
 
-#Y = np.loadtxt(base_path + "txtexport\\izmir_morris.txt")
-
-                        #"txtexport\\izmir_morris.txt"
-                        #_izmir_morris_9-29
-#np.savetxt(base_path + "txtexport\\sobol-building_characteristics-2-1-NUMPY.txt", Y)
-
 # analyse
 Si_Temp = sobol.analyze(problem, Y)
 Si_CDD = sobol.analyze(problem, CDD_Y)
@@ -466,11 +460,11 @@ data = {    'glazing_ratio': glazing_ratio_list,
 df = pd.DataFrame(data)
 
 
-df.to_csv(base_path + "csvexport\\sobol-building_characteristics-10-2-bc-s.csv")
+df.to_csv(base_path + "csvexport\\sobol-weekly-2-28-bc-s.csv")
 
 
 lines = [str(Si_Temp), str(Si_CDD), str(Si_HDD)]
-with open(base_path + 'txtexport\\sobol-building_characteristics-10-2-bc-s.txt', 'w') as f:
+with open(base_path + 'txtexport\\sobol-weekly-2-28-bc-s.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')

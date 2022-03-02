@@ -187,11 +187,11 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     # UWG PARAMETERS ------------------------------------------------------------------------------------------------
     
     model = UWG.from_param_args(
-        epw_path = epw_path, bldheight = 20, blddensity = 0.49, vertohor = 0.41, zone = '4B',
+        epw_path = epw_path, bldheight = 13.385, blddensity = 0.385, vertohor = 1.302, zone = '4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
         ref_sch_vector=ref_sch_vector, month=8, day=17,  nday=7, dtsim=200,
-        new_epw_name="SIMULATION1.epw",
-        charlength=500, vegend=10, vegstart=3, droad=1.25, croad=1961490, albroad=0.233, sensanth=19.995, kroad=1.9525
+        new_epw_name="SIMULATION3.epw",
+        charlength=500, vegend=10, vegstart=3, droad=1.25, croad=1960371, albroad=0.233, sensanth=20, kroad=1.955
         )
 
     ###---------------------------------------------------------------------------------------------------------------
@@ -360,7 +360,7 @@ def evaluate_epw():
                         )
             
             pd_epw_sens, _ = pvlib.iotools.read_epw(
-                    base_path + "data\\SIMULATION1.epw")
+                    base_path + "data\\SIMULATION3.epw")
                     
             indexes =  range(5473, 5473 + (24 * 7))
             
@@ -528,7 +528,7 @@ data = {
             } 
 
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-bc-summer-21-2-S1.csv")
+df.to_csv(base_path + "csvexport\\sobol-hourly-2-28-bc-s-S1.csv")
 
 for k in range(0, 24):
     for l in range(0, 16):
@@ -555,7 +555,7 @@ data = {
             } 
 
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-bc-summer-21-2-ST.csv")
+df.to_csv(base_path + "csvexport\\sobol-hourly-2-28-bc-s-ST.csv")
 
 
 Si_CDD = sobol.analyze(problem, CDD_Y)
@@ -565,7 +565,7 @@ Si_HDD10 = sobol.analyze(problem, HDD_10_Y)
 #print(str(Si_Temp))
 
 lines = [str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10)]
-with open(base_path + 'txtexport\\sobol-hourly-bc-summer-21-2.txt', 'w') as f:
+with open(base_path + 'txtexport\\sobol-hourly-2-28-bc-s.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
@@ -602,4 +602,4 @@ data = {
             } 
  
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-bc-summer-21-2.csv")
+df.to_csv(base_path + "csvexport\\sobol-hourly-2-28-bc-s.csv")

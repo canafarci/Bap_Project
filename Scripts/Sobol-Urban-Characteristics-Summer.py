@@ -27,8 +27,8 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
         
     if ver_to_hor < 0.521045:
         ver_to_hor = 0.521045
-    elif ver_to_hor > 2.605227:
-        ver_to_hor = 2.605227
+    elif ver_to_hor > 2.074:
+        ver_to_hor = 2.074
         
     if bld_density < 0.308:
         bld_density = 0.308
@@ -80,7 +80,7 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
     
     schdef1 = SchDef(elec=elec_week, gas=default_week, light=light_week,
                      occ=occ_week, cool=cool_week, heat=heat_week,
-                     q_elec=4.595, q_gas=3.2, q_light=4.395,
+                     q_elec=4.6, q_gas=3.2, q_light=4.4,
                      n_occ=(0.026665), vent=0.001 * 0.2, bldtype='midriseapartment',
                      builtera='pre80')
     
@@ -93,16 +93,17 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
     wallmt3 = Material(0.73, 1360000, 'brick')
 
     roofmtl = Material(0.84, 1520000, 'tile')
+    
     roofmt2 = Material(1.6, 1887000, 'concrete_floor')
 
 
-    wall_thickness = 0.73 / 1.555
-    roof_thickness = 1.6 / 0.7595
+    wall_thickness = 0.73 / 0.521
+    roof_thickness = 1.6 / 0.372
     
     # ELEMENT PARAMETERS ---------------------------------------------------------------------------
     
-    wall = Element(0.49995, 0.47495, [wall_thickness, 0.01],  [wallmt3, wallmt3], 0, 296, False, 'common_brick_wall_with_plaster')
-    roof = Element(0.49995, 0.47495, [roof_thickness, 0.025], [roofmtl, roofmtl], 0, 296, True, 'tile')
+    wall = Element(0.5, 0.475, [wall_thickness, 0.01],  [wallmt3, wallmt3], 0, 296, False, 'common_brick_wall_with_plaster')
+    roof = Element(0.5, 0.475, [roof_thickness, 0.025], [roofmtl, roofmtl], 0, 296, True, 'tile')
     mass = Element(0.20, 0.90, [0.15, 0.15], [roofmt2, roofmt2], 0, 296, True, 'concrete_floor')
 
     ### ---------------------------------------------------------------------------------------------
@@ -112,9 +113,9 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
     # BUILDING PARAMETERS -----------------------------------------------------------------------------------------------
 
     bldg = Building(
-        floor_height=2.895, int_heat_night=1, int_heat_day=1, int_heat_frad=1,
-        int_heat_flat=1, infil=0.7745, vent=0.98, glazing_ratio=0.335, u_value=2.8745,
-        shgc=0.625, condtype='AIR', cop=4.45, coolcap=900, heateff=0.8, initial_temp=300)
+        floor_height=2.878, int_heat_night=1, int_heat_day=1, int_heat_frad=1,
+        int_heat_flat=1, infil=0.775, vent=0.98, glazing_ratio=0.197, u_value=2.534,
+        shgc=0.583, condtype='AIR', cop=4.45, coolcap=900, heateff=0.8, initial_temp=300)
 
     bemdef1 = BEMDef(building=bldg, mass=mass, wall=wall, roof=roof, bldtype='midriseapartment', builtera='pre80')
     
@@ -141,7 +142,7 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
         epw_path=epw_path, bldheight=bld_height, blddensity=bld_density, vertohor=ver_to_hor, zone='4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
         ref_sch_vector=ref_sch_vector, month=8, day=17, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=180, albroad=road_albedo,
-        new_epw_name="SIMULATION.epw",
+        new_epw_name="SIMULATION7.epw",
         charlength=500,  albveg=0.3, vegend=10, vegstart=3, kroad=urban_road_thermal_conductivity,
         croad=urban_road_volumetric_heat_capacity
         )
@@ -227,7 +228,7 @@ def evaluate_epw():
                         float(params[5]), float(params[6])             
                         )
             pd_epw_sens, _ = pvlib.iotools.read_epw(
-                    base_path + "data\\SIMULATION.epw")
+                    base_path + "data\\SIMULATION7.epw")
                     
             indexes =  range(5473, 5473 + 168)
             
@@ -360,7 +361,7 @@ Si_HDD10 = sobol.analyze(problem, HDD_10_Y)
 print(str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10))
 
 lines = [str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10)]
-with open(base_path + 'txtexport\\sobol-urban_characteristics-10-2-uc-s.txt', 'w') as f:
+with open(base_path + 'txtexport\\sobol-weekly-2-28-uc-s.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
@@ -388,4 +389,4 @@ data = {
 df = pd.DataFrame(data) 
 
 
-df.to_csv(base_path + "csvexport\\ssobol-urban_characteristics-10-2-uc-s.csv")
+df.to_csv(base_path + "csvexport\\sobol-weekly-2-28-uc-s.csv")
