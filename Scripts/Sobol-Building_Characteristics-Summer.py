@@ -138,19 +138,20 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
 
     # MATERIAL PARAMETERS ------------------------------------------------------------------------------------------------
 
-    wallmt3 = Material(0.73, 1360000, 'brick')
+    brick = Material(0.33, 540000, 'brick')
+    xps = Material(0.035,  30000, "XPS")
+    
+    mineral_wool = Material(0.04, 16600, "mineral_wool")
+    concrete_slab = Material(2.5, 2016000, 'concrete_slab')
 
-    roofmtl = Material(0.84, 1520000, 'tile')
-    roofmt2 = Material(1.6, 1887000, 'concrete_floor')
-
-    wall_thickness = 0.73 / wall_u_value
-    roof_thickness = 1.6 / roof_u_value
+    xps_thickness = 0.73 / wall_u_value
+    mineral_wool_thickness = 1.6 / roof_u_value
 
     # ELEMENT PARAMETERS ---------------------------------------------------------------------------
 
-    wall = Element(wall_albedo, wall_emissivity, [wall_thickness, 0.01],  [wallmt3, wallmt3], 0, 296, False, 'common_brick_wall_with_plaster')
-    roof = Element(roof_albedo, roof_emissivity, [roof_thickness, 0.025], [roofmtl, roofmtl], 0, 296, True, 'tile')
-    mass = Element(0.20, 0.90, [0.15, 0.15], [roofmt2, roofmt2], 0, 296, True, 'concrete_floor')
+    wall = Element(wall_albedo, wall_emissivity, [xps_thickness, 0.01],  [brick, brick], 0, 296, False, 'common_brick_wall_with_plaster')
+    roof = Element(roof_albedo, roof_emissivity, [mineral_wool_thickness, 0.025], [concrete_slab, concrete_slab], 0, 296, True, 'tile')
+    mass = Element(0.20, 0.90, [0.15, 0.15], [concrete_slab, concrete_slab], 0, 296, True, 'concrete_floor')
 
     ### ---------------------------------------------------------------------------------------------
 

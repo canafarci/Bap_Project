@@ -4,20 +4,20 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 
-""" dataset = pd.read_csv("E:\\ARCHIVE\\BAP\\__Project\\csvexport\\dists3.csv")
+dataset = pd.read_csv("E:\\ARCHIVE\\BAP\\__Project\\csvexport\\dists3.csv")
 
 dataset = dataset.apply (pd.to_numeric, errors='coerce')
 
 dataset = dataset.dropna()
 dataset.to_numpy()
 
-dataset= dataset[dataset["window_u"] > 0]
+dataset= dataset[dataset["wall_u"] > 0]
 
 dataset = pd.DataFrame(np.sort(dataset.values, axis=0), index=dataset.index, columns=dataset.columns)
 
-dataset.loc[~(dataset==0).all(axis=1)] """
+dataset.loc[~(dataset==0).all(axis=1)]
 
-dataset = np.random.beta(20, 13.3, 100000)
+#dataset = np.random.beta(20, 13.3, 100000)
 
 
 sns.set_style('white')
