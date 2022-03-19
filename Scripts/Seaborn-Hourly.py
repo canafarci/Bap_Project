@@ -7,8 +7,8 @@ import pandas as pd
 base_path = "E:\\ARCHIVE\\BAP\\__Project\\csvexport\\"
 
 
-df = pd.read_csv(base_path + "sobol-hourly-uc-winter-21-2-S1.csv", encoding='latin-1')
-
+df = pd.read_csv(base_path + "sobol-hourly-3-10-uc-w-ST.csv", encoding='latin-1')
+df = df.iloc[: , 1:]
 # Seaborn setting
 sns.set(style='whitegrid', rc={"grid.linewidth": 0.1})
 sns.set_context("paper", font_scale=0.9)
@@ -23,7 +23,7 @@ color = sns.color_palette("Set2", 6)
 p = sns.lineplot(data=df)
 
 #labels
-p.axes.set_title("Urban Characteristics - Winter - First Order",fontsize=20)
+p.axes.set_title("Urban Characteristics - Winter",fontsize=20)
 p.set_xlabel("Hour",fontsize=15)
 p.set_ylabel("Sensitivy Index",fontsize=15)
 p.tick_params(labelsize=10)

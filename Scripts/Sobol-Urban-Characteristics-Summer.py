@@ -89,24 +89,20 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
 
 
     # MATERIAL PARAMETERS ------------------------------------------------------------------------------------------------
+    brick = Material(0.33, 585000, 'brick')
+    xps = Material(0.035,  30000, "XPS")
+    plaster = Material(0.51,  1308000, "plaster")
     
-    wallmt3 = Material(0.73, 1360000, 'brick')
-
-    roofmtl = Material(0.84, 1520000, 'tile')
+    mineral_wool = Material(0.04, 16600, "mineral_wool")
+    concrete_slab = Material(2.5, 2016000, 'concrete_slab')
     
-    roofmt2 = Material(1.6, 1887000, 'concrete_floor')
+    # ELEMENT PARAMETERS -----------------------------------------------------------------------------------------------
 
+    wall = Element(0.5, 0.475, [0.025, 0.04959, 0.135],  [plaster, xps, brick], 0, 296, False, 'common_brick_wall_with_xps')
+    roof = Element(0.5, 0.475, [0.025, 0.09396, 0.2], [plaster, mineral_wool, concrete_slab], 0, 296, True, 'roof_concrete_slab_with_mineral_wool')
+    mass = Element(0.20, 0.90, [0.05, 0.4], [plaster, concrete_slab], 0, 296, True, 'concrete_floor')
 
-    wall_thickness = 0.73 / 0.521
-    roof_thickness = 1.6 / 0.372
-    
-    # ELEMENT PARAMETERS ---------------------------------------------------------------------------
-    
-    wall = Element(0.5, 0.475, [wall_thickness, 0.01],  [wallmt3, wallmt3], 0, 296, False, 'common_brick_wall_with_plaster')
-    roof = Element(0.5, 0.475, [roof_thickness, 0.025], [roofmtl, roofmtl], 0, 296, True, 'tile')
-    mass = Element(0.20, 0.90, [0.15, 0.15], [roofmt2, roofmt2], 0, 296, True, 'concrete_floor')
-
-    ### ---------------------------------------------------------------------------------------------
+    ### ----------------------------------------------------------------------------------------------------------------
 
 
 
@@ -143,7 +139,7 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
         ref_sch_vector=ref_sch_vector, month=8, day=17, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=180, albroad=road_albedo,
         new_epw_name="SIMULATION7.epw",
-        charlength=500,  albveg=0.3, vegend=10, vegstart=3, kroad=urban_road_thermal_conductivity,
+        charlength=1000,  albveg=0.3, vegend=10, vegstart=3, kroad=urban_road_thermal_conductivity,
         croad=urban_road_volumetric_heat_capacity
         )
     
@@ -361,7 +357,7 @@ Si_HDD10 = sobol.analyze(problem, HDD_10_Y)
 print(str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10))
 
 lines = [str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10)]
-with open(base_path + 'txtexport\\sobol-weekly-2-28-uc-s.txt', 'w') as f:
+with open(base_path + 'txtexport\\sobol-weekly-3-10-uc-s.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
@@ -389,4 +385,4 @@ data = {
 df = pd.DataFrame(data) 
 
 
-df.to_csv(base_path + "csvexport\\sobol-weekly-2-28-uc-s.csv")
+df.to_csv(base_path + "csvexport\\sobol-weekly-3-10-uc-s.csv")

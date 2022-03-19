@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 base_path = "E:\\ARCHIVE\\BAP\\__Project\\csvexport\\"
 
 
-df = pd.read_csv(base_path + "sobol-building_characteristics-10-2-bc-w.csv", encoding='latin-1')
+df = pd.read_csv(base_path + "sobol-weekly-3-10-bc-w.csv", encoding='latin-1')
 #temp = df['temp_average']
 #glazing = df['glazing_ratio']
 
@@ -17,6 +17,7 @@ df = df.iloc[:]
 
 correlation_mat = df.corr()
 
-sns.heatmap(correlation_mat, annot = True, vmin=-1, vmax=1)
-
+p = sns.heatmap(correlation_mat, annot = True, vmin=-1, vmax=1)
+p.axes.set_title("Building Characteristics - Winter",fontsize=20)
+plt.subplots_adjust(bottom = 0.214)
 plt.show()

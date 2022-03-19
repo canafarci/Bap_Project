@@ -88,25 +88,20 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
 
 
     # MATERIAL PARAMETERS ------------------------------------------------------------------------------------------------
+    brick = Material(0.33, 585000, 'brick')
+    xps = Material(0.035,  30000, "XPS")
+    plaster = Material(0.51,  1308000, "plaster")
     
-    wallmt3 = Material(0.73, 1360000, 'brick')
-
-    roofmtl = Material(0.84, 1520000, 'tile')
+    mineral_wool = Material(0.04, 16600, "mineral_wool")
+    concrete_slab = Material(2.5, 2016000, 'concrete_slab')
     
-    roofmt2 = Material(1.6, 1887000, 'concrete_floor')
+    # ELEMENT PARAMETERS -----------------------------------------------------------------------------------------------
 
+    wall = Element(0.5, 0.475, [0.025, 0.04959, 0.135],  [plaster, xps, brick], 0, 296, False, 'common_brick_wall_with_xps')
+    roof = Element(0.5, 0.475, [0.025, 0.09396, 0.2], [plaster, mineral_wool, concrete_slab], 0, 296, True, 'roof_concrete_slab_with_mineral_wool')
+    mass = Element(0.20, 0.90, [0.05, 0.4], [plaster, concrete_slab], 0, 296, True, 'concrete_floor')
 
-    wall_thickness = 0.73 / 0.521
-    roof_thickness = 1.6 / 0.372
-    
-    # ELEMENT PARAMETERS ---------------------------------------------------------------------------
-    
-    wall = Element(0.5, 0.475, [wall_thickness, 0.01],  [wallmt3, wallmt3], 0, 296, False, 'common_brick_wall_with_plaster')
-    roof = Element(0.5, 0.475, [roof_thickness, 0.025], [roofmtl, roofmtl], 0, 296, True, 'tile')
-    mass = Element(0.20, 0.90, [0.15, 0.15], [roofmt2, roofmt2], 0, 296, True, 'concrete_floor')
-
-    ### ---------------------------------------------------------------------------------------------
-
+    ### ----------------------------------------------------------------------------------------------------------------
 
 
     # BUILDING PARAMETERS -----------------------------------------------------------------------------------------------
@@ -114,7 +109,7 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
     bldg = Building(
         floor_height=2.878, int_heat_night=1, int_heat_day=1, int_heat_frad=1,
         int_heat_flat=1, infil=0.775, vent=0.98, glazing_ratio=0.197, u_value=2.534,
-        shgc=0.583, condtype='AIR', cop=4.45, coolcap=900, heateff=0.8, initial_temp=300)
+        shgc=0.583, condtype='WATER', cop=4.45, coolcap=900, heateff=0.8, initial_temp=300)
 
     bemdef1 = BEMDef(building=bldg, mass=mass, wall=wall, roof=roof, bldtype='midriseapartment', builtera='pre80')
     
@@ -142,7 +137,7 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
         ref_sch_vector=ref_sch_vector, month=2, day=3, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=180, albroad=road_albedo,
         new_epw_name="SIMULATION6.epw",
-        charlength=500,  albveg=0.3, vegend=10, vegstart=3, kroad=urban_road_thermal_conductivity,
+        charlength=1000,  albveg=0.3, vegend=10, vegstart=3, kroad=urban_road_thermal_conductivity,
         croad=urban_road_volumetric_heat_capacity
         )
     
@@ -413,7 +408,7 @@ data = {
             } 
 
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-2-28-uc-w-S1.csv")
+df.to_csv(base_path + "csvexport\\sobol-hourly-3-10-uc-w-S1.csv")
 
 for k in range(0, 24):
     for l in range(0, 7):
@@ -430,7 +425,7 @@ data = {
             } 
 
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-2-28-uc-w-ST.csv")
+df.to_csv(base_path + "csvexport\\sobol-hourly-3-10-uc-w-ST.csv")
 
 
 Si_CDD = sobol.analyze(problem, CDD_Y)
@@ -440,7 +435,7 @@ Si_HDD10 = sobol.analyze(problem, HDD_10_Y)
 #print(str(Si_Temp))
 
 lines = [str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10)]
-with open(base_path + 'txtexport\\sobol-hourly-2-28-uc-w.txt', 'w') as f:
+with open(base_path + 'txtexport\\sobol-hourly-3-10-uc-w.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
@@ -465,4 +460,4 @@ data = {
             } 
  
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-2-28-uc-w.csv")
+df.to_csv(base_path + "csvexport\\sobol-hourly-3-10-uc-w.csv")

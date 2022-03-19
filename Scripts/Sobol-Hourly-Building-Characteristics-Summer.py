@@ -27,10 +27,10 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     elif roof_u_value > 1.362:
         roof_u_value = 1.362
 
-    if wall_u_value < 0.18:
-        wall_u_value = 0.18
-    elif wall_u_value > 2.93:
-        wall_u_value = 2.93
+    if wall_u_value < 0.221:
+        wall_u_value = 0.221
+    elif wall_u_value > 1.524:
+        wall_u_value = 1.524
 
     if glazing_ratio < 0.09:
         glazing_ratio= 0.09
@@ -135,26 +135,37 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
 
 
     # MATERIAL PARAMETERS ------------------------------------------------------------------------------------------------
+    brick = Material(0.33, 585000, 'brick')
+    xps = Material(0.035,  30000, "XPS")
+    plaster = Material(0.51,  1308000, "plaster")
     
-    wallmt3 = Material(0.73, 1360000, 'brick')
+    mineral_wool = Material(0.04, 16600, "mineral_wool")
+    concrete_slab = Material(2.5, 2016000, 'concrete_slab')
 
-    roofmtl = Material(0.84, 1520000, 'tile')
-    roofmt2 = Material(1.6, 1887000, 'concrete_floor')
-
-
-    ###-------------------------------------------------------------------------------------------------------------------
-
+    Rsi = 0.13
+    Rse = 0.04    
+    Rsi_roof = 0.13
+    Rse_roof = 0.08
+    mineral_wool_lambda = 0.04
+    concrete_slab_lambda = 2.5
+    xps_lambda = 0.035
+    brick_lambda = 0.33
+    plaster_lambda = 0.51
     
-    wall_thickness = 0.73 / wall_u_value
-    roof_thickness = 1.6 / roof_u_value
+    mineral_wool_thickness = ((1 / roof_u_value) - (0.2 / concrete_slab_lambda) - (0.025 / plaster_lambda) - (Rsi_roof + Rse_roof)) * mineral_wool_lambda
     
-    # ELEMENT PARAMETERS ---------------------------------------------------------------------------
+    xps_thickness   = ((1 / wall_u_value) - (0.135 / brick_lambda) - (0.025 / plaster_lambda) - (Rsi+ Rse)) * xps_lambda
     
-    wall = Element(wall_albedo, wall_emissivity, [wall_thickness, 0.01],  [wallmt3, wallmt3], 0, 296, False, 'common_brick_wall_with_plaster')
-    roof = Element(roof_albedo, roof_emissivity, [roof_thickness, 0.025], [roofmtl, roofmtl], 0, 296, True, 'tile')
-    mass = Element(0.20, 0.90, [0.15, 0.15], [roofmt2, roofmt2], 0, 296, True, 'concrete_floor')
 
-    ### ---------------------------------------------------------------------------------------------
+    print("XPS  " + str(xps_thickness) )
+    print("WOOL  " + str(mineral_wool_thickness) )
+    # ELEMENT PARAMETERS -----------------------------------------------------------------------------------------------
+
+    wall = Element(wall_albedo, wall_emissivity, [0.025, xps_thickness, 0.135],  [plaster, xps, brick], 0, 296, False, 'common_brick_wall_with_xps')
+    roof = Element(roof_albedo, roof_emissivity, [0.025, mineral_wool_thickness, 0.2], [plaster, mineral_wool, concrete_slab], 0, 296, True, 'roof_concrete_slab_with_mineral_wool')
+    mass = Element(0.20, 0.90, [0.05, 0.4], [plaster, concrete_slab], 0, 296, True, 'concrete_floor')
+
+    ### ----------------------------------------------------------------------------------------------------------------
 
 
 
@@ -189,9 +200,9 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     model = UWG.from_param_args(
         epw_path = epw_path, bldheight = 13.385, blddensity = 0.385, vertohor = 1.302, zone = '4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
-        ref_sch_vector=ref_sch_vector, month=8, day=17,  nday=7, dtsim=200,
+        ref_sch_vector=ref_sch_vector, month=8, day=17,  nday=7, dtsim=180,
         new_epw_name="SIMULATION3.epw",
-        charlength=500, vegend=10, vegstart=3, droad=1.25, croad=1960371, albroad=0.233, sensanth=20, kroad=1.955
+        charlength=1000, vegend=10, vegstart=3, droad=1.25, croad=1960371, albroad=0.233, sensanth=20, kroad=1.955
         )
 
     ###---------------------------------------------------------------------------------------------------------------
@@ -218,7 +229,7 @@ problem = {
               'floor_height', 'roof_u_value'],  #2
 
     'bounds': [[-1.462, 0.400],       #glazing_ratio
-               [-0.301, 0.592],       #wall_u_value
+               [-0.542,0.414],       #wall_u_value
                [0.965, 0.187],    #window_u_value
                [-0.519, 0.143],     #window_sghc
                [0.775, 0.21],       #infiltration_rate
@@ -236,7 +247,7 @@ problem = {
                [0.475, 0.18],  #roof_emissivity
 
                [1.059, 0.041],  #floor_height
-               [-0.771, 0.464]   #roof_u_value
+               [-0.771,0.464]   #roof_u_value
                ],
 
     'dists':['lognorm', 'lognorm','lognorm', 'lognorm', 'norm', 'norm',
@@ -528,7 +539,7 @@ data = {
             } 
 
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-2-28-bc-s-S1.csv")
+df.to_csv(base_path + "csvexport\\sobol-hourly-3-10-bc-s-S1.csv")
 
 for k in range(0, 24):
     for l in range(0, 16):
@@ -555,7 +566,7 @@ data = {
             } 
 
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-2-28-bc-s-ST.csv")
+df.to_csv(base_path + "csvexport\\sobol-hourly-3-10-bc-s-ST.csv")
 
 
 Si_CDD = sobol.analyze(problem, CDD_Y)
@@ -565,7 +576,7 @@ Si_HDD10 = sobol.analyze(problem, HDD_10_Y)
 #print(str(Si_Temp))
 
 lines = [str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10)]
-with open(base_path + 'txtexport\\sobol-hourly-2-28-bc-s.txt', 'w') as f:
+with open(base_path + 'txtexport\\sobol-hourly-3-10-bc-s.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
@@ -602,4 +613,4 @@ data = {
             } 
  
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-2-28-bc-s.csv")
+df.to_csv(base_path + "csvexport\\sobol-hourly-3-10-bc-s.csv")
