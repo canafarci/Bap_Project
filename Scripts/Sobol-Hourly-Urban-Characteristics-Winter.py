@@ -135,7 +135,7 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
     model = UWG.from_param_args(
         epw_path=epw_path, bldheight=bld_height, blddensity=bld_density, vertohor=ver_to_hor, zone='4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
-        ref_sch_vector=ref_sch_vector, month=2, day=3, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=180, albroad=road_albedo,
+        ref_sch_vector=ref_sch_vector, month=12, day=22, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=180, albroad=road_albedo,
         new_epw_name="SIMULATION6.epw",
         charlength=1000,  albveg=0.3, vegend=10, vegstart=3, kroad=urban_road_thermal_conductivity,
         croad=urban_road_volumetric_heat_capacity
@@ -260,15 +260,15 @@ def evaluate_epw():
             pd_epw_sens, _ = pvlib.iotools.read_epw(
                     base_path + "data\\SIMULATION6.epw")
                     
-            indexes =  range(793, 793 + (7 * 24))
+            indexes =  range(8521, 8521 + (7 * 24))
             
-            day_1_indexes = range(793, 793 + 24)
-            day_2_indexes = range(793 + 24, 793 + 48)
-            day_3_indexes = range(793 + 48, 793 + 72)
-            day_4_indexes = range(793 + 72, 793 + 96)
-            day_5_indexes = range(793 + 96, 793 + 120)
-            day_6_indexes = range(793 + 120, 793 + 144)
-            day_7_indexes = range(793 + 144, 793 + 168)
+            day_1_indexes = range(8521, 8521 + 24)
+            day_2_indexes = range(8521 + 24, 8521 + 48)
+            day_3_indexes = range(8521 + 48, 8521 + 72)
+            day_4_indexes = range(8521 + 72, 8521 + 96)
+            day_5_indexes = range(8521 + 96, 8521 + 120)
+            day_6_indexes = range(8521 + 120, 8521 + 144)
+            day_7_indexes = range(8521 + 144, 8521 + 168)
             
             all_day_indexes = [day_1_indexes, day_2_indexes, day_3_indexes, day_4_indexes, day_5_indexes, day_6_indexes, day_7_indexes]
             
@@ -408,7 +408,7 @@ data = {
             } 
 
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-3-10-uc-w-S1.csv")
+df.to_csv(base_path + "csvexport\\sobol-hourly-3-16-uc-w-S1.csv")
 
 for k in range(0, 24):
     for l in range(0, 7):
@@ -425,7 +425,7 @@ data = {
             } 
 
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-3-10-uc-w-ST.csv")
+df.to_csv(base_path + "csvexport\\sobol-hourly-3-16-uc-w-ST.csv")
 
 
 Si_CDD = sobol.analyze(problem, CDD_Y)
@@ -460,4 +460,4 @@ data = {
             } 
  
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-3-10-uc-w.csv")
+df.to_csv(base_path + "csvexport\\sobol-hourly-3-16-uc-w.csv")

@@ -137,7 +137,7 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
     model = UWG.from_param_args(
         epw_path=epw_path, bldheight=bld_height, blddensity=bld_density, vertohor=ver_to_hor, zone='4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
-        ref_sch_vector=ref_sch_vector, month=8, day=17, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=180, albroad=road_albedo,
+        ref_sch_vector=ref_sch_vector, month=5, day=24, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=180, albroad=road_albedo,
         new_epw_name="SIMULATION7.epw",
         charlength=1000,  albveg=0.3, vegend=10, vegstart=3, kroad=urban_road_thermal_conductivity,
         croad=urban_road_volumetric_heat_capacity
@@ -226,15 +226,15 @@ def evaluate_epw():
             pd_epw_sens, _ = pvlib.iotools.read_epw(
                     base_path + "data\\SIMULATION7.epw")
                     
-            indexes =  range(5473, 5473 + 168)
-            
-            day_1_indexes = range(5473, 5473 + 24)
-            day_2_indexes = range(5473 + 24, 5473 + 48)
-            day_3_indexes = range(5473 + 48, 5473 + 72)
-            day_4_indexes = range(5473 + 72, 5473 + 96)
-            day_5_indexes = range(5473 + 96, 5473 + 120)
-            day_6_indexes = range(5473 + 120, 5473 + 144)
-            day_7_indexes = range(5473 + 144, 5473 + 168)
+            indexes =  range(3433, 3433 + (7 * 24))
+
+            day_1_indexes = range(3433, 3433 + 24)
+            day_2_indexes = range(3433 + 24, 3433 + 48)
+            day_3_indexes = range(3433 + 48, 3433 + 72)
+            day_4_indexes = range(3433 + 72, 3433 + 96)
+            day_5_indexes = range(3433 + 96, 3433 + 120)
+            day_6_indexes = range(3433 + 120, 3433 + 144)
+            day_7_indexes = range(3433 + 144, 3433 + 168)
             
             all_day_indexes = [day_1_indexes, day_2_indexes, day_3_indexes, day_4_indexes, day_5_indexes, day_6_indexes, day_7_indexes]
             
@@ -357,7 +357,7 @@ Si_HDD10 = sobol.analyze(problem, HDD_10_Y)
 print(str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10))
 
 lines = [str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10)]
-with open(base_path + 'txtexport\\sobol-weekly-3-10-uc-s.txt', 'w') as f:
+with open(base_path + 'txtexport\\sobol-weekly-3-16-uc-s.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
@@ -385,4 +385,4 @@ data = {
 df = pd.DataFrame(data) 
 
 
-df.to_csv(base_path + "csvexport\\sobol-weekly-3-10-uc-s.csv")
+df.to_csv(base_path + "csvexport\\sobol-weekly-3-16-uc-s.csv")

@@ -30,6 +30,35 @@ arr = [[        nan, -0.04958324, -0.0222538 , -0.0316588 , -0.03419532,
        [        nan,         nan,         nan,         nan,         nan,
                 nan,         nan]] """
 
+title = "Urban Characteristics - Winter"
+       # uc - w - to
+data = [6.53667969e-01, 1.84045258e-01, 1.53559608e-01, 7.00761511e-03,
+       1.04915383e-04, 1.60749530e-02, 6.74699138e-04]
+error = [4.01162634e-02, 1.77798209e-02, 1.37682994e-02, 5.76687725e-04,
+       1.54680218e-05, 1.67246590e-03, 7.06112706e-05]
+        # uc - w - 2nd
+arr = [[            nan, -1.96457579e-02, -1.26298931e-02,
+        -1.29717930e-02, -1.57012947e-02, -1.15133360e-02,
+        -1.27536755e-02],
+       [            nan,             nan,  4.37438416e-03,
+         3.00301136e-03,  3.43695263e-03,  4.39354712e-03,
+         3.59698929e-03],
+       [            nan,             nan,             nan,
+         4.07082530e-03,  5.09526704e-03,  5.16355822e-03,
+         4.43107424e-03],
+       [            nan,             nan,             nan,
+                    nan,  2.27066338e-03,  2.39074636e-03,
+         2.23618484e-03],
+       [            nan,             nan,             nan,
+                    nan,             nan,  8.83115110e-05,
+         2.92688624e-05],
+       [            nan,             nan,             nan,
+                    nan,             nan,             nan,
+         1.27823002e-03],
+       [            nan,             nan,             nan,
+                    nan,             nan,             nan,
+                    nan]]
+
 #endregion
 #region __Urban Characteristics - Summer__
        # uc - s - to
@@ -51,6 +80,27 @@ arr = [[        nan, -0.00535842,  0.00352694, -0.00197054, -0.00354302,
         -0.00147902, -0.0010381 ],
        [        nan,         nan,         nan,         nan,         nan,
                 nan,  0.00228608],
+       [        nan,         nan,         nan,         nan,         nan,
+                nan,         nan]] """
+                
+""" title = "Urban Characteristics - Summer"
+data = [0.58365643, 0.14134266, 0.22422787, 0.00428948, 0.00095385,
+       0.05626358, 0.01164557]
+error = [0.03783225, 0.01302818, 0.0210239 , 0.00051786, 0.00015197,
+       0.00516205, 0.00120276]
+# uc - s - 2nd
+arr = [[        nan, -0.02032214, -0.00567168, -0.01593407, -0.01301886,
+        -0.01260632, -0.01269754],
+       [        nan,         nan, -0.00921614, -0.00968526, -0.01072775,
+        -0.01269923, -0.01053605],
+       [        nan,         nan,         nan,  0.00588044,  0.00574155,
+         0.00538731,  0.00508039],
+       [        nan,         nan,         nan,         nan, -0.0003252 ,
+        -0.0013286 , -0.00013796],
+       [        nan,         nan,         nan,         nan,         nan,
+         0.00106155,  0.00079818],
+       [        nan,         nan,         nan,         nan,         nan,
+                nan, -0.00114689],
        [        nan,         nan,         nan,         nan,         nan,
                 nan,         nan]] """
 #endregion
@@ -167,7 +217,7 @@ arr = [[            nan, -1.02152745e-02,  8.75475691e-03,
 #region __Building Characteristics - Summer__
        # bc- s - to
        
-title = "Building Characteristics - Summer"
+""" title = "Building Characteristics - Summer"
 data = [0.38671033, 0.01703526, 0.00202169, 0.00289366, 0.0056419 ,
        0.02846277, 0.30894634, 0.0163477 , 0.00550074, 0.00114346,
        0.01219618, 0.00235608, 0.23176034, 0.0073107 , 0.01259146,
@@ -272,16 +322,16 @@ arr = [[            nan,  6.66515467e-03,  5.88482258e-03,
                     nan,             nan,             nan,
                     nan,             nan,             nan,
                     nan,             nan,             nan,
-                    nan]]
+                    nan]] """
 #endregion
 #endregion
 
 #uc
-""" labels = ['Building Height', 'Facade to Site Ratio', 'Building Density', 'Urban Road Volumetric Heat Capacity',
-          'Urban Road Albedo', 'Sensible Anthropogenic Heat', 'Urban Road Thermal Conductivity'] """
+labels = ['Building Height', 'Facade to Site Ratio', 'Building Density', 'Urban Road Volumetric Heat Capacity',
+          'Urban Road Albedo', 'Sensible Anthropogenic Heat', 'Urban Road Thermal Conductivity']
 #bc
-labels = ['Glazing Ratio', 'Wall U Value', 'Window U Value', 'Window SHGC', 'Infiltration Rate', 'Chiller COP', 'Thermostat Setpoint', 'Equipment Load Density',
-          'Lighting Load Density', 'Occupancy Density', 'Wall Albedo', 'Roof Albedo', 'Wall Emissivity', 'Roof Emissivity', 'Floor Height', 'Roof U Value']
+""" labels = ['Glazing Ratio', 'Wall U Value', 'Window U Value', 'Window SHGC', 'Infiltration Rate', 'Chiller COP', 'Thermostat Setpoint', 'Equipment Load Density',
+          'Lighting Load Density', 'Occupancy Density', 'Wall Albedo', 'Roof Albedo', 'Wall Emissivity', 'Roof Emissivity', 'Floor Height', 'Roof U Value'] """
           
 # Seaborn setting
 sns.set(style='whitegrid', rc={"grid.linewidth": 0.1})

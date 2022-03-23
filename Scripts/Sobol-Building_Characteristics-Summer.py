@@ -202,7 +202,7 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     model = UWG.from_param_args(
         epw_path = epw_path, bldheight = 13.385, blddensity = 0.385, vertohor = 1.302, zone = '4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
-        ref_sch_vector=ref_sch_vector, month=8, day=17,  nday=7, dtsim=180,
+        ref_sch_vector=ref_sch_vector, month=5, day=24,  nday=7, dtsim=180,
         new_epw_name="SIMULATION1.epw",
         charlength=1000, vegend=10, vegstart=3, droad=1.25, croad=1960371, albroad=0.233, sensanth=20, kroad=1.955
         )
@@ -330,15 +330,15 @@ def evaluate_epw():
             pd_epw_sens, _ = pvlib.iotools.read_epw(
                     base_path + "data\\SIMULATION1.epw")
 
-            indexes =  range(5473, 5473 + (7 * 24))
+            indexes =  range(3433, 3433 + (7 * 24))
 
-            day_1_indexes = range(5473, 5473 + 24)
-            day_2_indexes = range(5473 + 24, 5473 + 48)
-            day_3_indexes = range(5473 + 48, 5473 + 72)
-            day_4_indexes = range(5473 + 72, 5473 + 96)
-            day_5_indexes = range(5473 + 96, 5473 + 120)
-            day_6_indexes = range(5473 + 120, 5473 + 144)
-            day_7_indexes = range(5473 + 144, 5473 + 168)
+            day_1_indexes = range(3433, 3433 + 24)
+            day_2_indexes = range(3433 + 24, 3433 + 48)
+            day_3_indexes = range(3433 + 48, 3433 + 72)
+            day_4_indexes = range(3433 + 72, 3433 + 96)
+            day_5_indexes = range(3433 + 96, 3433 + 120)
+            day_6_indexes = range(3433 + 120, 3433 + 144)
+            day_7_indexes = range(3433 + 144, 3433 + 168)
 
             all_day_indexes = [day_1_indexes, day_2_indexes, day_3_indexes, day_4_indexes, day_5_indexes, day_6_indexes, day_7_indexes]
 
@@ -474,9 +474,9 @@ data = {    'glazing_ratio': glazing_ratio_list,
 df = pd.DataFrame(data)
 
 
-df.to_csv(base_path + "csvexport\\sobol-weekly-3-10-bc-s.csv")
+df.to_csv(base_path + "csvexport\\sobol-weekly-3-16-bc-s.csv")
 lines = [str(Si_Temp), str(Si_CDD), str(Si_HDD)]
-with open(base_path + 'txtexport\\sobol-weekly-3-10-bc-s.txt', 'w') as f:
+with open(base_path + 'txtexport\\sobol-weekly-3-16-bc-s.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
