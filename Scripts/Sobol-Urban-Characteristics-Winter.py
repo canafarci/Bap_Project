@@ -12,6 +12,15 @@ import pandas as pd
 
 base_path = "E:\\ARCHIVE\\BAP\\__Project\\"
 
+bld_height_list = []
+ver_to_hor_list = []
+bld_density_list = []
+urban_road_volumetric_heat_capacity_list = []
+road_albedo_list = []
+sensible_anthropogenic_heat_list = []
+urban_road_thermal_conductivity_list = []
+        
+
 def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_capacity, road_albedo, 
               sensible_anthropogenic_heat, urban_road_thermal_conductivity):
               
@@ -54,7 +63,14 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
         urban_road_thermal_conductivity = 1.02
     elif urban_road_thermal_conductivity > 2.885:
         urban_road_thermal_conductivity = 2.885
-        
+    
+    bld_height_list.append(bld_height)
+    ver_to_hor_list.append(ver_to_hor)
+    bld_density_list.append(bld_height)
+    urban_road_volumetric_heat_capacity_list.append(urban_road_volumetric_heat_capacity)
+    road_albedo_list.append(road_albedo)
+    sensible_anthropogenic_heat_list.append(sensible_anthropogenic_heat)
+    urban_road_thermal_conductivity_list.append(urban_road_thermal_conductivity)
         
     
         
@@ -135,10 +151,11 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
     model = UWG.from_param_args(
         epw_path=epw_path, bldheight=bld_height, blddensity=bld_density, vertohor=ver_to_hor, zone='4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
-        ref_sch_vector=ref_sch_vector, month=12, day=22, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=180, albroad=road_albedo,
+        ref_sch_vector=ref_sch_vector, month=2, day=21, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=180, albroad=road_albedo,
         new_epw_name="SIMULATION8.epw",
         charlength=1000,  albveg=0.3, vegend=10, vegstart=3, kroad=urban_road_thermal_conductivity,
-        croad=urban_road_volumetric_heat_capacity
+        croad=urban_road_volumetric_heat_capacity,
+        c_exch=0.5, h_mix=0.5, h_ubl1 = 750, h_ubl2 = 75, c_circ= 1, maxday=200, maxnight=50
         )
     
     ###---------------------------------------------------------------------------------------------------------------
@@ -178,13 +195,7 @@ param_values = saltelli.sample(problem, 1400) #1400
 #region CSV index lists definition -------------------------
 max_length = len(param_values)
 
-bld_height_list = []
-ver_to_hor_list = []
-bld_density_list = []
-urban_road_volumetric_heat_capacity_list = []
-road_albedo_list = []
-sensible_anthropogenic_heat_list = []
-urban_road_thermal_conductivity_list = []
+
 
 temp_result_list = []
 hdd_result_list = []
@@ -208,13 +219,7 @@ def evaluate_epw():
         try:
             print("************ CURRENT ITERATION: " + str(int(m + 1)) + " / " + str(max_length) +  " EXCEPTIONS: " + str(l) + " ************")
                 
-            bld_height_list.append(float(params[0]))
-            ver_to_hor_list.append(float(params[1]))
-            bld_density_list.append(float(params[2]))
-            urban_road_volumetric_heat_capacity_list.append(float(params[3]))
-            road_albedo_list.append(float(params[4]))
-            sensible_anthropogenic_heat_list.append(float(params[5]))
-            urban_road_thermal_conductivity_list.append(float(params[6]))
+            
                 
             custom_uwg(float(params[0]), float(params[1]), float(params[2]), float(params[3]), float(params[4]), 
                         float(params[5]), float(params[6])             
@@ -222,15 +227,15 @@ def evaluate_epw():
             pd_epw_sens, _ = pvlib.iotools.read_epw(
                     base_path + "data\\SIMULATION8.epw")
                     
-            indexes =  range(8521, 8521 + (7 * 24))
+            indexes =  range(1225, 1225 + (7 * 24))
             
-            day_1_indexes = range(8521, 8521 + 24)
-            day_2_indexes = range(8521 + 24, 8521 + 48)
-            day_3_indexes = range(8521 + 48, 8521 + 72)
-            day_4_indexes = range(8521 + 72, 8521 + 96)
-            day_5_indexes = range(8521 + 96, 8521 + 120)
-            day_6_indexes = range(8521 + 120, 8521 + 144)
-            day_7_indexes = range(8521 + 144, 8521 + 168)
+            day_1_indexes = range(1225, 1225 + 24)
+            day_2_indexes = range(1225 + 24, 1225 + 48)
+            day_3_indexes = range(1225 + 48, 1225 + 72)
+            day_4_indexes = range(1225 + 72, 1225 + 96)
+            day_5_indexes = range(1225 + 96, 1225 + 120)
+            day_6_indexes = range(1225 + 120, 1225 + 144)
+            day_7_indexes = range(1225 + 144, 1225 + 168)
             
             all_day_indexes = [day_1_indexes, day_2_indexes, day_3_indexes, day_4_indexes, day_5_indexes, day_6_indexes, day_7_indexes]
             
@@ -353,7 +358,7 @@ Si_HDD10 = sobol.analyze(problem, HDD_10_Y)
 print(str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10))
 
 lines = [str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10)]
-with open(base_path + 'txtexport\\sobol-weekly-3-16-uc-w.txt', 'w') as f:
+with open(base_path + 'txtexport\\sobol-weekly-4-15-uc-w.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
@@ -381,4 +386,4 @@ data = {
 df = pd.DataFrame(data) 
 
 
-df.to_csv(base_path + "csvexport\\sobol-weekly-3-16-uc-w.csv")
+df.to_csv(base_path + "csvexport\\sobol-weekly-4-15-uc-w.csv")
