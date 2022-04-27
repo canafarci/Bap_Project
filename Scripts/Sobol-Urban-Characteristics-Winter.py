@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 
 base_path = "E:\\ARCHIVE\\BAP\\__Project\\"
+epw_path = base_path + "data\\TUR_Ankara.171280_IWEC.epw"
 
 bld_height_list = []
 ver_to_hor_list = []
@@ -139,8 +140,6 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
     
     bld = [('midriseapartment', 'pre80', 1)  # overwrite
            ]  # extend
-
-    epw_path = base_path + "data\\TUR_Ankara.171280_IWEC.epw"
     
     ###-------------------------------------------------------------------------------------------
 
@@ -151,7 +150,7 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
     model = UWG.from_param_args(
         epw_path=epw_path, bldheight=bld_height, blddensity=bld_density, vertohor=ver_to_hor, zone='4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
-        ref_sch_vector=ref_sch_vector, month=2, day=21, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=180, albroad=road_albedo,
+        ref_sch_vector=ref_sch_vector, month=2, day=3, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=180, albroad=road_albedo,
         new_epw_name="SIMULATION8.epw",
         charlength=1000,  albveg=0.3, vegend=10, vegstart=3, kroad=urban_road_thermal_conductivity,
         croad=urban_road_volumetric_heat_capacity,
@@ -201,6 +200,7 @@ temp_result_list = []
 hdd_result_list = []
 cdd_result_list = []
 hdd_10C_result_list = []
+UHII_list = []
 
 day_max_temp_list = []
 day_min_temp_list = []
@@ -215,6 +215,7 @@ def evaluate_epw():
     hdd_y = np.zeros([max_length])
     cdd_y = np.zeros([max_length])
     hdd_10_y = np.zeros([max_length])
+    UHII_y = np.zeros([max_length])
     for params in param_values:
         try:
             print("************ CURRENT ITERATION: " + str(int(m + 1)) + " / " + str(max_length) +  " EXCEPTIONS: " + str(l) + " ************")
@@ -226,16 +227,17 @@ def evaluate_epw():
                         )
             pd_epw_sens, _ = pvlib.iotools.read_epw(
                     base_path + "data\\SIMULATION8.epw")
+            base_epw, _ = pvlib.iotools.read_epw(epw_path)
                     
-            indexes =  range(1225, 1225 + (7 * 24))
+            indexes =  range(793, 793 + (7 * 24))
             
-            day_1_indexes = range(1225, 1225 + 24)
-            day_2_indexes = range(1225 + 24, 1225 + 48)
-            day_3_indexes = range(1225 + 48, 1225 + 72)
-            day_4_indexes = range(1225 + 72, 1225 + 96)
-            day_5_indexes = range(1225 + 96, 1225 + 120)
-            day_6_indexes = range(1225 + 120, 1225 + 144)
-            day_7_indexes = range(1225 + 144, 1225 + 168)
+            day_1_indexes = range(793, 793 + 24)
+            day_2_indexes = range(793 + 24, 793 + 48)
+            day_3_indexes = range(793 + 48, 793 + 72)
+            day_4_indexes = range(793 + 72, 793 + 96)
+            day_5_indexes = range(793 + 96, 793 + 120)
+            day_6_indexes = range(793 + 120, 793 + 144)
+            day_7_indexes = range(793 + 144, 793 + 168)
             
             all_day_indexes = [day_1_indexes, day_2_indexes, day_3_indexes, day_4_indexes, day_5_indexes, day_6_indexes, day_7_indexes]
             
@@ -243,10 +245,16 @@ def evaluate_epw():
             hdd_list = np.zeros([len(indexes)])
             cdd_list = np.zeros([len(indexes)])
             hdd_10_list = np.zeros([len(indexes)])
+            UHII_intensity_list = np.zeros([len(indexes)])
                 
             j = 0
             for i in indexes:
                 hourly_temperature = pd_epw_sens['temp_air'].values[i]
+                hourly_base_temperature = base_epw['temp_air'].values[i]
+                
+                if (hourly_temperature > hourly_base_temperature):
+                    UHII_intensity_list[j] = hourly_temperature - hourly_base_temperature
+                    
                 temp_list[j] = hourly_temperature
                     
                 #toplanacak    -------------
@@ -297,11 +305,13 @@ def evaluate_epw():
             hdd_y[k] = np.sum(hdd_list)
             cdd_y[k] = np.sum(cdd_list)
             hdd_10_y[k] = np.sum(hdd_10_list)
+            UHII_y[k] = np.average(UHII_intensity_list)
                 
             temp_result_list.append(np.average(temp_list))
             hdd_result_list.append(np.sum(hdd_list))
             cdd_result_list.append(np.sum(cdd_list))
             hdd_10C_result_list.append(np.sum(hdd_10_list))
+            UHII_list.append(np.average(UHII_intensity_list))
             
             day_max_temp_list.append(average(temperature_max_list))
             day_min_temp_list.append(average(temperature_min_list))
@@ -340,10 +350,9 @@ def evaluate_epw():
             )
             
                 
-    return y, hdd_y, cdd_y, hdd_10_y
+    return y, hdd_y, cdd_y, hdd_10_y, UHII_y
 
-Y, HDD_Y, CDD_Y, HDD_10_Y = evaluate_epw()
-
+Y, HDD_Y, CDD_Y, HDD_10_Y, UHII_Y = evaluate_epw()
 #Y = np.loadtxt(base_path + "txtexport\\izmir_morris.txt")
 
                         #"txtexport\\izmir_morris.txt"
@@ -354,11 +363,12 @@ Si_Temp = sobol.analyze(problem, Y)
 Si_CDD = sobol.analyze(problem, CDD_Y)
 Si_HDD = sobol.analyze(problem, HDD_Y)
 Si_HDD10 = sobol.analyze(problem, HDD_10_Y)
+Si_UHII = sobol.analyze(problem, UHII_Y)
 
 print(str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10))
 
-lines = [str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10)]
-with open(base_path + 'txtexport\\sobol-weekly-4-15-uc-w.txt', 'w') as f:
+lines = [str(Si_UHII), str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10)]
+with open(base_path + 'txtexport\\sobol-weekly-4-25-uc-w.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
@@ -380,10 +390,11 @@ data = {
             'hdd_10C_results': hdd_10C_result_list,
             'cdd_results': cdd_result_list,
             'daily_average_max_temperature': day_max_temp_list,
-            'daily_average_min_temperature': day_min_temp_list
+            'daily_average_min_temperature': day_min_temp_list,
+            "UHII" : UHII_list
             } 
  
 df = pd.DataFrame(data) 
 
 
-df.to_csv(base_path + "csvexport\\sobol-weekly-4-15-uc-w.csv")
+df.to_csv(base_path + "csvexport\\sobol-weekly-4-25-uc-w.csv")
