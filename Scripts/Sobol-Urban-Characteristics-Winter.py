@@ -52,8 +52,8 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
         
     if road_albedo < 0.1217:
         road_albedo = 0.1217
-    elif road_albedo > 0.2334:
-        road_albedo = 0.2334
+    elif road_albedo > 0.345:
+        road_albedo = 0.345
         
     if sensible_anthropogenic_heat < 8.36:
         sensible_anthropogenic_heat = 8.36
@@ -125,7 +125,7 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
 
     bldg = Building(
         floor_height=2.878, int_heat_night=1, int_heat_day=1, int_heat_frad=1,
-        int_heat_flat=1, infil=0.775, vent=0.98, glazing_ratio=0.197, u_value=2.534,
+        int_heat_flat=1, infil=0.775, vent=0.98, glazing_ratio=0.217, u_value=2.534,
         shgc=0.583, condtype='WATER', cop=4.45, coolcap=900, heateff=0.8, initial_temp=300)
 
     bemdef1 = BEMDef(building=bldg, mass=mass, wall=wall, roof=roof, bldtype='midriseapartment', builtera='pre80')
@@ -174,7 +174,7 @@ problem = {
                [0.385508, 0.0375508],    #bld_density
                [1960371, 300000],     #urban_road_volumetric_heat_capacity
                #[1000, 100],       #urban_area_length
-               [0.1776, 0.024],      #road_albedo
+               [0.23345,0.048025],       #road_albedo
                
                [20, 5],    #sensible_anthropogenic_heat
                [1.955, 0.4],    #urban_road_thermal_conductivity

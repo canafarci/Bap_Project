@@ -6,14 +6,14 @@ import matplotlib.pyplot as plt
 base_path = "E:\\ARCHIVE\\BAP\\__Project\\csvexport\\"
 
 
-df = pd.read_csv(base_path + "sobol-weekly-3-10-bc-w.csv", encoding='latin-1')
+df = pd.read_csv(base_path + "sobol-weekly-4-25-bc-s.csv", encoding='latin-1')
 #temp = df['temp_average']
 #glazing = df['glazing_ratio']
 
 #C = np.corrcoef(glazing,temp)
 
 df = df.iloc[:]
-
+df.round(decimals=1)
 
 correlation_mat = df.corr()
 

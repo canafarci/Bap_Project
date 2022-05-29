@@ -293,8 +293,6 @@ problem = {
               'norm', 'norm', 'norm', 'norm',
               'lognorm', 'lognorm']
 
-
-
 }
 
 # endregion
@@ -343,7 +341,7 @@ def evaluate_epw():
                        float(params[15])
                        )
             pd_epw_sens, _ = pvlib.iotools.read_epw(
-                os.path.join(base_path, folder_path))
+                os.path.join(base_path, intermediate_epw_path))
 
             base_epw, _ = pvlib.iotools.read_epw(epw_path)
 

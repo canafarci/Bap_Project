@@ -9,8 +9,21 @@ from SALib.test_functions import Ishigami
 import pvlib
 import numpy as np
 import pandas as pd
+import os
 
-base_path = "E:\\ARCHIVE\\BAP\\__Project\\"
+base_path = os.getcwd()
+folder_path = "data/TUR_Ankara.171280_IWEC.epw"
+intermediate_epw_path = "data/simulation1h.epw"
+epw_path = os.path.join(base_path, folder_path)
+
+bld_height_list = []
+ver_to_hor_list = []
+bld_density_list = []
+urban_road_volumetric_heat_capacity_list = []
+road_albedo_list = []
+sensible_anthropogenic_heat_list = []
+urban_road_thermal_conductivity_list = []
+
 
 def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_capacity, road_albedo, 
               sensible_anthropogenic_heat, urban_road_thermal_conductivity):
@@ -42,8 +55,8 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
         
     if road_albedo < 0.1217:
         road_albedo = 0.1217
-    elif road_albedo > 0.2334:
-        road_albedo = 0.2334
+    elif road_albedo > 0.345:
+        road_albedo = 0.345
         
     if sensible_anthropogenic_heat < 8.36:
         sensible_anthropogenic_heat = 8.36
@@ -54,6 +67,14 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
         urban_road_thermal_conductivity = 1.02
     elif urban_road_thermal_conductivity > 2.885:
         urban_road_thermal_conductivity = 2.885
+    
+    bld_height_list.append(bld_height)
+    ver_to_hor_list.append(ver_to_hor)
+    bld_density_list.append(bld_height)
+    urban_road_volumetric_heat_capacity_list.append(urban_road_volumetric_heat_capacity)
+    road_albedo_list.append(road_albedo)
+    sensible_anthropogenic_heat_list.append(sensible_anthropogenic_heat)
+    urban_road_thermal_conductivity_list.append(urban_road_thermal_conductivity)
         
     
         
@@ -103,13 +124,11 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
 
     ### ----------------------------------------------------------------------------------------------------------------
 
-
-
     # BUILDING PARAMETERS -----------------------------------------------------------------------------------------------
 
     bldg = Building(
         floor_height=2.878, int_heat_night=1, int_heat_day=1, int_heat_frad=1,
-        int_heat_flat=1, infil=0.775, vent=0.98, glazing_ratio=0.197, u_value=2.534,
+        int_heat_flat=1, infil=0.775, vent=0.98, glazing_ratio=0.217, u_value=2.534,
         shgc=0.583, condtype='AIR', cop=4.45, coolcap=900, heateff=0.8, initial_temp=300)
 
     bemdef1 = BEMDef(building=bldg, mass=mass, wall=wall, roof=roof, bldtype='midriseapartment', builtera='pre80')
@@ -124,8 +143,6 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
     
     bld = [('midriseapartment', 'pre80', 1)  # overwrite
            ]  # extend
-
-    epw_path = base_path + "data\\TUR_Ankara.171280_IWEC.epw"
     
     ###-------------------------------------------------------------------------------------------
 
@@ -137,9 +154,10 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
         epw_path=epw_path, bldheight=bld_height, blddensity=bld_density, vertohor=ver_to_hor, zone='4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
         ref_sch_vector=ref_sch_vector, month=8, day=17, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=180, albroad=road_albedo,
-        new_epw_name="SIMULATION5.epw",
+        new_epw_name="simulation1h.epw",
         charlength=1000,  albveg=0.3, vegend=10, vegstart=3, kroad=urban_road_thermal_conductivity,
-        croad=urban_road_volumetric_heat_capacity
+        croad=urban_road_volumetric_heat_capacity,
+        c_exch=0.5, h_mix=0.5, h_ubl1 = 750, h_ubl2 = 75, c_circ= 1, maxday=200, maxnight=50
         )
     
     ###---------------------------------------------------------------------------------------------------------------
@@ -161,7 +179,7 @@ problem = {
                [0.385508, 0.0375508],    #bld_density
                [1960371, 300000],     #urban_road_volumetric_heat_capacity
                #[1000, 100],       #urban_area_length
-               [0.1776, 0.024],      #road_albedo
+               [0.23345,0.048025],      #road_albedo
                
                [20, 5],    #sensible_anthropogenic_heat
                [1.955, 0.4],    #urban_road_thermal_conductivity
@@ -180,14 +198,6 @@ param_values = saltelli.sample(problem, 1400) #1400
 
 #region CSV index lists definition -------------------------
 max_length = len(param_values)
-
-bld_height_list = []
-ver_to_hor_list = []
-bld_density_list = []
-urban_road_volumetric_heat_capacity_list = []
-road_albedo_list = []
-sensible_anthropogenic_heat_list = []
-urban_road_thermal_conductivity_list = []
 
 temp_result_list = []
 hdd_result_list = []
@@ -246,20 +256,13 @@ def evaluate_epw():
         try:
             print("************ CURRENT ITERATION: " + str(int(m + 1)) + " / " + str(max_length) +  " EXCEPTIONS: " + str(l) + " ************")
                 
-            bld_height_list.append(float(params[0]))
-            ver_to_hor_list.append(float(params[1]))
-            bld_density_list.append(float(params[2]))
-            urban_road_volumetric_heat_capacity_list.append(float(params[3]))
-            road_albedo_list.append(float(params[4]))
-            sensible_anthropogenic_heat_list.append(float(params[5]))
-            urban_road_thermal_conductivity_list.append(float(params[6]))
-                
             custom_uwg(float(params[0]), float(params[1]), float(params[2]), float(params[3]), float(params[4]), 
                         float(params[5]), float(params[6])   
                         )
             
             pd_epw_sens, _ = pvlib.iotools.read_epw(
-                    base_path + "data\\SIMULATION5.epw")
+                os.path.join(base_path, intermediate_epw_path))
+            base_epw, _ = pvlib.iotools.read_epw(epw_path)
                     
             indexes =  range(5473, 5473 + 168)
             
@@ -281,6 +284,7 @@ def evaluate_epw():
             j = 0
             for i in indexes:
                 hourly_temperature = pd_epw_sens['temp_air'].values[i]
+                        
                 temp_list[j] = hourly_temperature
                     
                 #toplanacak    -------------
@@ -328,7 +332,13 @@ def evaluate_epw():
                     
             for h in range(0,7):
                 for b in range(0, 24):
-                    all_y_indexes[b][k][h] =  pd_epw_sens['temp_air'].values[(24 * h) + b + 5473].astype(float).item()
+                    hourly_temperature = pd_epw_sens['temp_air'].values[(24 * h) + b + 5473]
+                    hourly_base_temperature = base_epw['temp_air'].values[(24 * h) + b + 5473]
+
+                    if (hourly_temperature > hourly_base_temperature):
+                        all_y_indexes[b][k][h] =  hourly_temperature - hourly_base_temperature
+                    else:
+                        all_y_indexes[b][k][h] = 0
                 
             hdd_y[k] = np.sum(hdd_list)
             cdd_y[k] = np.sum(cdd_list)
@@ -347,6 +357,7 @@ def evaluate_epw():
             m +=1
             
         except Exception as e:
+            raise(e)
             print("EXCEPTION OCCURED")
             print(e)
             hdd_y[k] = hdd_y[k-1]
@@ -409,7 +420,7 @@ data = {
             } 
 
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-3-10-uc-s-S1.csv")
+df.to_csv(base_path + "\\csvexport\\sobol-hourly-5-29-uc-s-S1.csv")
 
 for k in range(0, 24):
     for l in range(0, 7):
@@ -426,7 +437,7 @@ data = {
             } 
 
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-3-10-uc-s-ST.csv")
+df.to_csv(base_path + "\\csvexport\\sobol-hourly-5-29-uc-s-ST.csv")
 
 
 Si_CDD = sobol.analyze(problem, CDD_Y)
@@ -436,7 +447,7 @@ Si_HDD10 = sobol.analyze(problem, HDD_10_Y)
 #print(str(Si_Temp))
 
 lines = [str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10)]
-with open(base_path + 'txtexport\\sobol-hourly-3-10-uc-s.txt', 'w') as f:
+with open(base_path + '\\txtexport\\sobol-hourly-5-29-uc-s.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
@@ -461,4 +472,4 @@ data = {
             } 
  
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-3-10-uc-s.csv")
+df.to_csv(base_path + "\\csvexport\\sobol-hourly-5-29-uc-s.csv")

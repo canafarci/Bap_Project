@@ -9,8 +9,29 @@ from SALib.test_functions import Ishigami
 import pvlib
 import numpy as np
 import pandas as pd
+import os
 
-base_path = "E:\\ARCHIVE\\BAP\\__Project\\"
+base_path = os.getcwd()
+folder_path = "data/TUR_Ankara.171280_IWEC.epw"
+intermediate_epw_path = "data/simulation3h.epw"
+epw_path = os.path.join(base_path, folder_path)
+
+glazing_ratio_list = []
+wall_u_value_list = []
+window_u_value_list = []
+window_sghc_list = []
+infiltration_rate_list = []
+chiller_cop_list = []
+indoor_temp_set_point_list = []
+equipment_load_density_list = []
+lighting_load_density_list = []
+occupancy_density_list = []
+wall_albedo_list = []
+roof_albedo_list = []
+wall_emissivity_list = []
+roof_emissivity_list = []
+floor_height_list = []
+roof_u_value_list = []
 
 def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltration_rate,
                chiller_cop, indoor_temp_set_point, equipment_load_density, lighting_load_density, occupancy_density,
@@ -32,10 +53,10 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     elif wall_u_value > 1.524:
         wall_u_value = 1.524
 
-    if glazing_ratio < 0.09:
-        glazing_ratio= 0.09
-    elif glazing_ratio > 0.58:
-        glazing_ratio = 0.58
+    if glazing_ratio < 0.129:
+        glazing_ratio = 0.129
+    elif glazing_ratio > 0.414:
+        glazing_ratio = 0.414
 
     if window_u_value < 1.69:
         window_u_value = 1.69
@@ -77,30 +98,47 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     elif occupancy_density > 0.03333:
         occupancy_density = 0.03333
 
-    if wall_albedo < 0.3371:
-        wall_albedo = 0.3371
-    elif wall_albedo > 0.6628:
-        wall_albedo = 0.6628
+    if wall_albedo < 0.318:
+        wall_albedo = 0.318
+    elif wall_albedo > 0.528:
+        wall_albedo = 0.528
 
-    if roof_albedo < 0.3371:
-        roof_albedo = 0.3371
-    elif roof_albedo > 0.6628:
-        roof_albedo = 0.6628
+    if roof_albedo < 0.318:
+        roof_albedo = 0.318
+    elif roof_albedo > 0.528:
+        roof_albedo = 0.528
 
-    if wall_emissivity < 0.0562:
-        wall_emissivity = 0.0562
-    elif wall_emissivity > 0.8937:
-        wall_emissivity = 0.8937
+    if wall_emissivity < 0.791:
+        wall_emissivity = 0.791
+    elif wall_emissivity > 0.908:
+        wall_emissivity = 0.908
 
-    if roof_emissivity < 0.0562:
-        roof_emissivity = 0.0562
-    elif roof_emissivity > 0.8937:
-        roof_emissivity = 0.8937
+    if roof_emissivity < 0.791:
+        roof_emissivity = 0.791
+    elif roof_emissivity > 0.908:
+        roof_emissivity = 0.908
 
     if floor_height < 2.62:
         floor_height = 2.62
     elif floor_height > 3.17:
         floor_height = 3.17
+
+    glazing_ratio_list.append(glazing_ratio)
+    wall_u_value_list.append(wall_u_value)
+    window_u_value_list.append(window_u_value)
+    window_sghc_list.append(window_sghc)
+    infiltration_rate_list.append(infiltration_rate)
+    chiller_cop_list.append(chiller_cop)
+    indoor_temp_set_point_list.append(indoor_temp_set_point)
+    equipment_load_density_list.append(equipment_load_density)
+    lighting_load_density_list.append(lighting_load_density)
+    occupancy_density_list.append(occupancy_density)
+    wall_albedo_list.append(wall_albedo)
+    roof_albedo_list.append(roof_albedo)
+    wall_emissivity_list.append(wall_emissivity)
+    roof_emissivity_list.append(roof_emissivity)
+    floor_height_list.append(floor_height)
+    roof_u_value_list.append(roof_u_value)
         
     
         
@@ -138,12 +176,12 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     brick = Material(0.33, 585000, 'brick')
     xps = Material(0.035,  30000, "XPS")
     plaster = Material(0.51,  1308000, "plaster")
-    
+
     mineral_wool = Material(0.04, 16600, "mineral_wool")
     concrete_slab = Material(2.5, 2016000, 'concrete_slab')
 
     Rsi = 0.13
-    Rse = 0.04    
+    Rse = 0.04
     Rsi_roof = 0.13
     Rse_roof = 0.08
     mineral_wool_lambda = 0.04
@@ -151,47 +189,47 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
     xps_lambda = 0.035
     brick_lambda = 0.33
     plaster_lambda = 0.51
-    
-    mineral_wool_thickness = ((1 / roof_u_value) - (0.2 / concrete_slab_lambda) - (0.025 / plaster_lambda) - (Rsi_roof + Rse_roof)) * mineral_wool_lambda
-    
-    xps_thickness   = ((1 / wall_u_value) - (0.135 / brick_lambda) - (0.025 / plaster_lambda) - (Rsi+ Rse)) * xps_lambda
-    
 
-    print("XPS  " + str(xps_thickness) )
-    print("WOOL  " + str(mineral_wool_thickness) )
+    mineral_wool_thickness = ((1 / roof_u_value) - (0.2 / concrete_slab_lambda) - (
+        0.025 / plaster_lambda) - (Rsi_roof + Rse_roof)) * mineral_wool_lambda
+
+    xps_thickness = ((1 / wall_u_value) - (0.135 / brick_lambda) -
+                     (0.025 / plaster_lambda) - (Rsi + Rse)) * xps_lambda
+
+    print("XPS  " + str(xps_thickness))
+    print("WOOL  " + str(mineral_wool_thickness))
     # ELEMENT PARAMETERS -----------------------------------------------------------------------------------------------
 
-    wall = Element(wall_albedo, wall_emissivity, [0.025, xps_thickness, 0.135],  [plaster, xps, brick], 0, 296, False, 'common_brick_wall_with_xps')
-    roof = Element(roof_albedo, roof_emissivity, [0.025, mineral_wool_thickness, 0.2], [plaster, mineral_wool, concrete_slab], 0, 296, True, 'roof_concrete_slab_with_mineral_wool')
-    mass = Element(0.20, 0.90, [0.05, 0.4], [plaster, concrete_slab], 0, 296, True, 'concrete_floor')
+    wall = Element(wall_albedo, wall_emissivity, [0.025, xps_thickness, 0.135],  [
+                   plaster, xps, brick], 0, 296, False, 'common_brick_wall_with_xps')
+    roof = Element(roof_albedo, roof_emissivity, [0.025, mineral_wool_thickness, 0.2], [
+                   plaster, mineral_wool, concrete_slab], 0, 296, True, 'roof_concrete_slab_with_mineral_wool')
+    mass = Element(0.20, 0.90, [0.05, 0.4], [
+                   plaster, concrete_slab], 0, 296, True, 'concrete_floor')
 
-    ### ----------------------------------------------------------------------------------------------------------------
-
-
+    # ----------------------------------------------------------------------------------------------------------------
 
     # BUILDING PARAMETERS -----------------------------------------------------------------------------------------------
 
     bldg = Building(
         floor_height=floor_height, int_heat_night=1, int_heat_day=1, int_heat_frad=1,
-        int_heat_flat=1, infil=infiltration_rate, vent=(0.001 * 0.2) , glazing_ratio=glazing_ratio, u_value=window_u_value,
+        int_heat_flat=1, infil=infiltration_rate, vent=(0.001 * 0.2), glazing_ratio=glazing_ratio, u_value=window_u_value,
         shgc=window_sghc, condtype='AIR', cop=chiller_cop, coolcap=900, heateff=0.8, initial_temp=300)
 
-    bemdef1 = BEMDef(building=bldg, mass=mass, wall=wall, roof=roof, bldtype='midriseapartment', builtera='pre80')
-    
-    ###------------------------------------------------------------------------------------------------------------------
+    bemdef1 = BEMDef(building=bldg, mass=mass, wall=wall,
+                     roof=roof, bldtype='midriseapartment', builtera='pre80')
 
+    # ------------------------------------------------------------------------------------------------------------------
 
     # VECTOR---------------------------------------------------------------------------------------
-    
+
     ref_sch_vector = [schdef1]
     ref_bem_vector = [bemdef1]
-    
+
     bld = [('midriseapartment', 'pre80', 1)  # overwrite
            ]  # extend
 
-    epw_path = base_path + "data\\TUR_Ankara.171280_IWEC.epw"
-    
-    ###-------------------------------------------------------------------------------------------
+    # -------------------------------------------------------------------------------------------
 
 
     
@@ -201,8 +239,9 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
         epw_path = epw_path, bldheight = 13.385, blddensity = 0.385, vertohor = 1.302, zone = '4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
         ref_sch_vector=ref_sch_vector, month=8, day=17,  nday=7, dtsim=180,
-        new_epw_name="SIMULATION3.epw",
-        charlength=1000, vegend=10, vegstart=3, droad=1.25, croad=1960371, albroad=0.233, sensanth=20, kroad=1.955
+        new_epw_name="simulation3h.epw",
+        charlength=1000, vegend=10, vegstart=3, droad=1.25, croad=1960371, albroad=0.233, sensanth=20, kroad=1.955,
+        c_exch=0.5, h_mix=0.5, h_ubl1=750, h_ubl2=75, c_circ=1, maxday=200, maxnight=50
         )
 
     ###---------------------------------------------------------------------------------------------------------------
@@ -223,37 +262,38 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
 #region Parameter Definition ------------------------------
 problem = {
     'num_vars': 16,
-    'names': ['glazing_ratio', 'wall_u_value', 'window_u_value', 'window_sghc', 'infiltration_rate', 'chiller_cop', #6
-              'indoor_temp_set_point', 'equipment_load_density', 'lighting_load_density', 'occupancy_density',  #4
-              'wall_albedo', 'roof_albedo', 'wall_emissivity', 'roof_emissivity',  #5
-              'floor_height', 'roof_u_value'],  #2
+    'names': ['glazing_ratio', 'wall_u_value', 'window_u_value', 'window_sghc', 'infiltration_rate', 'chiller_cop',  # 6
+              'indoor_temp_set_point', 'equipment_load_density', 'lighting_load_density', 'occupancy_density',  # 4
+              'wall_albedo', 'roof_albedo', 'wall_emissivity', 'roof_emissivity',  # 5
+              'floor_height', 'roof_u_value'],  # 2
 
-    'bounds': [[-1.462, 0.400],       #glazing_ratio
-               [-0.542,0.414],       #wall_u_value
-               [0.965, 0.187],    #window_u_value
-               [-0.519, 0.143],     #window_sghc
-               [0.775, 0.21],       #infiltration_rate
-               [4.45, 0.85],      #chiller_cop
+    'bounds': [[-1.462, 0.250],  # glazing_ratio
+               [-0.542, 0.414],  # wall_u_value
+               [0.965, 0.187],  # window_u_value
+               [-0.519, 0.143],  # window_sghc
+               [0.775, 0.21],  # infiltration_rate
+               [4.45, 0.85],  # chiller_cop
 
-               [20, 24],    #indoor_temp_set_point
-               [4.6, 0.48],    #equipment_load_density
-               [4.4, 0.42],     #lighting_load_density
+               [20, 24],  # indoor_temp_set_point
+               [4.6, 0.48],  # equipment_load_density
+               [4.4, 0.42],  # lighting_load_density
                [0.02665, 0.00443],  # occupancy_density ---- 10
 
 
-               [0.5, 0.07],  # wall_albedo ----- 20
-               [0.5, 0.07],  # roof_albedo
-               [0.475, 0.18],  # wall_emissivity
-               [0.475, 0.18],  #roof_emissivity
+               [0.4235, 0.045],  # wall_albedo ----- 20
+               [0.4235, 0.045],  # roof_albedo
+               [0.85, 0.025],  # wall_emissivity
+               [0.85, 0.025],  # roof_emissivity
 
-               [1.059, 0.041],  #floor_height
-               [-0.771,0.464]   #roof_u_value
+               [1.059, 0.041],  # floor_height
+               [-0.771, 0.464]  # roof_u_value
                ],
 
-    'dists':['lognorm', 'lognorm','lognorm', 'lognorm', 'norm', 'norm',
+    'dists': ['lognorm', 'lognorm', 'lognorm', 'lognorm', 'norm', 'norm',
               'unif', 'norm', 'norm', 'norm',
               'norm', 'norm', 'norm', 'norm',
-              'lognorm','lognorm' ]
+              'lognorm', 'lognorm']
+
 }
 
 #endregion
@@ -262,23 +302,6 @@ param_values = saltelli.sample(problem, 2300) #2300
 
 #region CSV index lists definition -------------------------
 max_length = len(param_values)
-
-glazing_ratio_list = []
-wall_u_value_list = []
-window_u_value_list = []
-window_sghc_list = []
-infiltration_rate_list = []
-chiller_cop_list = []
-indoor_temp_set_point_list = []
-equipment_load_density_list = []
-lighting_load_density_list = []
-occupancy_density_list = []
-wall_albedo_list = []
-roof_albedo_list = []
-wall_emissivity_list = []
-roof_emissivity_list = []
-floor_height_list = []
-roof_u_value_list = []
 
 temp_result_list = []
 hdd_result_list = []
@@ -346,23 +369,6 @@ def evaluate_epw():
     for params in param_values:
         try:
             print("************ CURRENT ITERATION: " + str(int(m + 1)) + " / " + str(max_length) +  " EXCEPTIONS: " + str(l) + " ************")
-             
-            glazing_ratio_list.append(float(params[0]))
-            wall_u_value_list.append(float(params[1]))
-            window_u_value_list.append(float(params[2]))
-            window_sghc_list.append(float(params[3]))
-            infiltration_rate_list.append(float(params[4]))
-            chiller_cop_list.append(float(params[5]))
-            indoor_temp_set_point_list.append(float(params[6]))
-            equipment_load_density_list.append(float(params[7]))
-            lighting_load_density_list.append(float(params[8]))
-            occupancy_density_list.append(float(params[9]))
-            wall_albedo_list.append(float(params[10]))
-            roof_albedo_list.append(float(params[11]))
-            wall_emissivity_list.append(float(params[12]))
-            roof_emissivity_list.append(float(params[13]))
-            floor_height_list.append(float(params[14]))
-            roof_u_value_list.append(float(params[15]))
                 
             custom_uwg(float(params[0]), float(params[1]), float(params[2]), float(params[3]), float(params[4]), 
                         float(params[5]), float(params[6]), float(params[7]), float(params[8]), float(params[9]),
@@ -371,7 +377,9 @@ def evaluate_epw():
                         )
             
             pd_epw_sens, _ = pvlib.iotools.read_epw(
-                    base_path + "data\\SIMULATION3.epw")
+                os.path.join(base_path, intermediate_epw_path))
+
+            base_epw, _ = pvlib.iotools.read_epw(epw_path)
                     
             indexes =  range(5473, 5473 + (24 * 7))
             
@@ -440,7 +448,13 @@ def evaluate_epw():
                     
             for h in range(0,7):
                 for b in range(0, 24):
-                    all_y_indexes[b][k][h] =  pd_epw_sens['temp_air'].values[(24 * h) + b + 5473].astype(float).item()
+                    hourly_temperature = pd_epw_sens['temp_air'].values[(24 * h) + b + 5473]
+                    hourly_base_temperature = base_epw['temp_air'].values[(24 * h) + b + 5473]
+
+                    if (hourly_temperature > hourly_base_temperature):
+                        all_y_indexes[b][k][h] =  hourly_temperature - hourly_base_temperature
+                    else:
+                        all_y_indexes[b][k][h] = 0
                 
             hdd_y[k] = np.sum(hdd_list)
             cdd_y[k] = np.sum(cdd_list)
@@ -469,23 +483,6 @@ def evaluate_epw():
             cdd_result_list.append(nan)
             day_max_temp_list.append(nan)
             day_min_temp_list.append(nan)
-            
-            glazing_ratio_list.append(float(params[0]))
-            wall_u_value_list.append(float(params[1]))
-            window_u_value_list.append(float(params[2]))
-            window_sghc_list.append(float(params[3]))
-            infiltration_rate_list.append(float(params[4]))
-            chiller_cop_list.append(float(params[5]))
-            indoor_temp_set_point_list.append(float(params[6]))
-            equipment_load_density_list.append(float(params[7]))
-            lighting_load_density_list.append(float(params[8]))
-            occupancy_density_list.append(float(params[9]))
-            wall_albedo_list.append(float(params[10]))
-            roof_albedo_list.append(float(params[11]))
-            wall_emissivity_list.append(float(params[12]))
-            roof_emissivity_list.append(float(params[13]))
-            floor_height_list.append(float(params[14]))
-            roof_u_value_list.append(float(params[15]))
             
             k += 1
             l += 1
@@ -539,7 +536,7 @@ data = {
             } 
 
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-3-10-bc-s-S1.csv")
+df.to_csv(base_path + "\\csvexport\\sobol-hourly-5-29-bc-s-S1.csv")
 
 for k in range(0, 24):
     for l in range(0, 16):
@@ -566,7 +563,7 @@ data = {
             } 
 
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-3-10-bc-s-ST.csv")
+df.to_csv(base_path + "\\csvexport\\sobol-hourly-5-29-bc-s-ST.csv")
 
 
 Si_CDD = sobol.analyze(problem, CDD_Y)
@@ -576,7 +573,7 @@ Si_HDD10 = sobol.analyze(problem, HDD_10_Y)
 #print(str(Si_Temp))
 
 lines = [str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10)]
-with open(base_path + 'txtexport\\sobol-hourly-3-10-bc-s.txt', 'w') as f:
+with open(base_path + '\\txtexport\\sobol-hourly-5-29-bc-s.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
@@ -613,4 +610,4 @@ data = {
             } 
  
 df = pd.DataFrame(data) 
-df.to_csv(base_path + "csvexport\\sobol-hourly-3-10-bc-s.csv")
+df.to_csv(base_path + "\\csvexport\\sobol-hourly-5-29-bc-s.csv")
