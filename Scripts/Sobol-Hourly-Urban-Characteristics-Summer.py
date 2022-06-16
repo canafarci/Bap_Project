@@ -256,8 +256,36 @@ def evaluate_epw():
     y_23 = np.zeros((max_length, 7))
     y_24 = np.zeros((max_length, 7))
 
+    t_1 = np.zeros((max_length, 7))
+    t_2 = np.zeros((max_length, 7))
+    t_3 = np.zeros((max_length, 7))
+    t_4 = np.zeros((max_length, 7))
+    t_5 = np.zeros((max_length, 7))
+    t_6 = np.zeros((max_length, 7))
+    t_7 = np.zeros((max_length, 7))
+    t_8 = np.zeros((max_length, 7))
+    t_9 = np.zeros((max_length, 7))
+    t_10 = np.zeros((max_length, 7))
+    t_11 = np.zeros((max_length, 7))
+    t_12 = np.zeros((max_length, 7))
+    t_13 = np.zeros((max_length, 7))
+    t_14 = np.zeros((max_length, 7))
+    t_15 = np.zeros((max_length, 7))
+    t_16 = np.zeros((max_length, 7))
+    t_17 = np.zeros((max_length, 7))
+    t_18 = np.zeros((max_length, 7))
+    t_19 = np.zeros((max_length, 7))
+    t_20 = np.zeros((max_length, 7))
+    t_21 = np.zeros((max_length, 7))
+    t_22 = np.zeros((max_length, 7))
+    t_23 = np.zeros((max_length, 7))
+    t_24 = np.zeros((max_length, 7))
+
     all_y_indexes = [y_1, y_2, y_3, y_4, y_5, y_6, y_7, y_8, y_9, y_10, y_11,
                      y_12, y_13, y_14, y_15, y_16, y_17, y_18, y_19, y_20, y_21, y_22, y_23, y_24]
+    all_t_indexes = [t_1, t_2, t_3, t_4, t_5, t_6, t_7, t_8, t_9, t_10, t_11,
+                     t_12, t_13, t_14, t_15, t_16, t_17, t_18, t_19, t_20, t_21, t_22, t_23, t_24]
+
     hdd_y = np.zeros([max_length])
     cdd_y = np.zeros([max_length])
     hdd_10_y = np.zeros([max_length])
@@ -348,6 +376,8 @@ def evaluate_epw():
                     hourly_base_temperature = base_epw['temp_air'].values[(
                         24 * h) + b + 5473]
 
+                    all_t_indexes[b][k][h] = hourly_temperature
+
                     if (hourly_temperature > hourly_base_temperature):
                         all_y_indexes[b][k][h] = hourly_temperature - \
                             hourly_base_temperature
@@ -406,10 +436,14 @@ def evaluate_epw():
         all_y_indexes[b] = np.transpose(all_y_indexes[b])
         all_y_indexes[b] = np.average(all_y_indexes[b], axis=0)
 
-    return all_y_indexes, hdd_y, cdd_y, hdd_10_y
+    for b in range(0, 24):
+        all_t_indexes[b] = np.transpose(all_t_indexes[b])
+        all_t_indexes[b] = np.average(all_t_indexes[b], axis=0)
+
+    return all_y_indexes, hdd_y, cdd_y, hdd_10_y, all_t_indexes
 
 
-Y, HDD_Y, CDD_Y, HDD_10_Y = evaluate_epw()
+Y, HDD_Y, CDD_Y, HDD_10_Y, t_indices = evaluate_epw()
 
 Si_Temp = []
 c = 0
@@ -436,7 +470,7 @@ data = {
 }
 
 df = pd.DataFrame(data)
-df.to_csv(base_path + "\\csvexport\\sobol-hourly-5-29-uc-s-S1.csv")
+df.to_csv(base_path + "\\csvexport\\sobol-hourly-6-16-uc-s-S1.csv")
 
 for k in range(0, 24):
     for l in range(0, 7):
@@ -453,7 +487,7 @@ data = {
 }
 
 df = pd.DataFrame(data)
-df.to_csv(base_path + "\\csvexport\\sobol-hourly-5-29-uc-s-ST.csv")
+df.to_csv(base_path + "\\csvexport\\sobol-hourly-6-16-uc-s-ST.csv")
 
 
 Si_CDD = sobol.analyze(problem, CDD_Y)
@@ -463,12 +497,46 @@ Si_HDD10 = sobol.analyze(problem, HDD_10_Y)
 # print(str(Si_Temp))
 
 lines = [str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10)]
-with open(base_path + '\\txtexport\\sobol-hourly-5-29-uc-s.txt', 'w') as f:
+with open(base_path + '\\txtexport\\sobol-hourly-6-16-uc-s.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
         f.write('------------')
         f.write('\n')
+
+data = {}
+
+t_1 = []
+t_2 = []
+t_3 = []
+t_4 = []
+t_6 = []
+t_7 = []
+t_5 = []
+t_8 = []
+t_9 = []
+t_10 = []
+t_11 = []
+t_12 = []
+t_13 = []
+t_14 = []
+t_15 = []
+t_16 = []
+t_17 = []
+t_18 = []
+t_19 = []
+t_20 = []
+t_21 = []
+t_22 = []
+t_23 = []
+t_24 = []
+all_t_indexes = [t_1, t_2, t_3, t_4, t_5, t_6, t_7, t_8, t_9, t_10, t_11,
+                 t_12, t_13, t_14, t_15, t_16, t_17, t_18, t_19, t_20, t_21, t_22, t_23, t_24]
+
+o = 0
+for _ in t_indices:
+    all_t_indexes[o] = _.tolist()
+    o = o + 1
 
 data = {
     'bld_height': bld_height_list,
@@ -484,8 +552,34 @@ data = {
     'hdd_10C_results': hdd_10C_result_list,
     'cdd_results': cdd_result_list,
     'daily_average_max_temperature': day_max_temp_list,
-    'daily_average_min_temperature': day_min_temp_list
+    'daily_average_min_temperature': day_min_temp_list,
+
+
+    "1": all_t_indexes[0],
+    "2": all_t_indexes[1],
+    "3": all_t_indexes[2],
+    "4": all_t_indexes[3],
+    "5": all_t_indexes[4],
+    "6": all_t_indexes[5],
+    "7": all_t_indexes[6],
+    "8": all_t_indexes[7],
+    "9": all_t_indexes[8],
+    "10": all_t_indexes[9],
+    "11": all_t_indexes[10],
+    "12": all_t_indexes[11],
+    "13": all_t_indexes[12],
+    "14": all_t_indexes[13],
+    "15": all_t_indexes[14],
+    "16": all_t_indexes[15],
+    "17": all_t_indexes[16],
+    "18": all_t_indexes[17],
+    "19": all_t_indexes[18],
+    "20": all_t_indexes[19],
+    "21": all_t_indexes[20],
+    "22": all_t_indexes[21],
+    "23": all_t_indexes[22],
+    "24": all_t_indexes[23],
 }
 
 df = pd.DataFrame(data)
-df.to_csv(base_path + "\\csvexport\\sobol-hourly-5-29-uc-s.csv")
+df.to_excel(base_path + "\\csvexport\\sobol-hourly-6-16-uc-s.xlsx")

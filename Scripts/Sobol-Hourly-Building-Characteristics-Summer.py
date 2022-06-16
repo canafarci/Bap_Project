@@ -691,6 +691,7 @@ data = {
     'cdd_results': cdd_result_list,
     'daily_average_max_temperature': day_max_temp_list,
     'daily_average_min_temperature': day_min_temp_list,
+
     "1": all_t_indexes[0],
     "2": all_t_indexes[1],
     "3": all_t_indexes[2],
