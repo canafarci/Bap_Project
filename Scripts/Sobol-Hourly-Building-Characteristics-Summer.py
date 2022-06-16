@@ -665,6 +665,7 @@ for _ in t_indices:
     all_t_indexes[o] = _.tolist()
     o = o + 1
 
+
 data = {
     'glazing_ratio': glazing_ratio_list,
     'wall_u_value': wall_u_value_list,
