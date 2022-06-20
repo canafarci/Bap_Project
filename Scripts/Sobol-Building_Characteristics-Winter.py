@@ -8,12 +8,15 @@ from SALib.test_functions import Ishigami
 import pvlib
 import numpy as np
 import pandas as pd
+import os
 
 # 18 JANUARY
 # 3 FEBRUARY
 
-base_path = "E:\\ARCHIVE\\BAP\\__Project\\"
-epw_path = base_path + "data\\TUR_Ankara.171280_IWEC.epw"
+base_path = os.getcwd()
+folder_path = "data/TUR_Ankara.171280_IWEC.epw"
+intermediate_epw_path = "data/simulation2.epw"
+epw_path = os.path.join(base_path, folder_path)
 
 glazing_ratio_list = []
 wall_u_value_list = []
@@ -242,7 +245,7 @@ def custom_uwg(glazing_ratio, wall_u_value, window_u_value, window_sghc, infiltr
         epw_path=epw_path, bldheight=13.385, blddensity=0.385, vertohor=1.302, zone='4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
         ref_sch_vector=ref_sch_vector, month=2, day=3,  nday=7, dtsim=180,
-        new_epw_name="SIMULATION2.epw",
+        new_epw_name="simulation2.epw",
         charlength=1000, vegend=10, vegstart=3, droad=1.25, croad=1960371, albroad=0.233, sensanth=20, kroad=1.955,
         c_exch=0.5, h_mix=0.5, h_ubl1=750, h_ubl2=75, c_circ=1, maxday=200, maxnight=50
     )
@@ -301,7 +304,7 @@ problem = {
 # endregion
 
 # sample
-param_values = saltelli.sample(problem, 1024)  # 2300
+param_values = saltelli.sample(problem, 2300)  # 2300
 
 # region CSV index lists definition -------------------------
 max_length = len(param_values)
@@ -343,7 +346,8 @@ def evaluate_epw():
                        float(params[15])
                        )
             pd_epw_sens, _ = pvlib.iotools.read_epw(
-                base_path + "data\\SIMULATION2.epw")
+                os.path.join(base_path, intermediate_epw_path))
+            
             base_epw, _ = pvlib.iotools.read_epw(epw_path)
 
             indexes = range(793, 793 + (7 * 24))
@@ -478,7 +482,7 @@ Si_UHII = sobol.analyze(problem, UHII_Y)
 print(str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10))
 
 lines = [str(Si_UHII), str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10)]
-with open(base_path + 'txtexport\\sobol-weekly-4-25-bc-w.txt', 'w') as f:
+with open(base_path + '\\txtexport\\sobol-weekly-6-16-bc-w.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
@@ -514,4 +518,4 @@ data = {'glazing_ratio': glazing_ratio_list,
 df = pd.DataFrame(data)
 
 
-df.to_csv(base_path + "csvexport\\sobol-weekly-4-25-bc-w.csv")
+df.to_excel(base_path + "\\csvexport\\sobol-weekly-6-16-bc-w.xlsx")

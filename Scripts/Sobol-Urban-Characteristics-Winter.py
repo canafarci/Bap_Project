@@ -9,9 +9,15 @@ from SALib.test_functions import Ishigami
 import pvlib
 import numpy as np
 import pandas as pd
+import os
 
-base_path = "E:\\ARCHIVE\\BAP\\__Project\\"
-epw_path = base_path + "data\\TUR_Ankara.171280_IWEC.epw"
+# 18 JANUARY
+# 3 FEBRUARY
+
+base_path = os.getcwd()
+folder_path = "data/TUR_Ankara.171280_IWEC.epw"
+intermediate_epw_path = "data/simulation4.epw"
+epw_path = os.path.join(base_path, folder_path)
 
 bld_height_list = []
 ver_to_hor_list = []
@@ -154,7 +160,7 @@ def custom_uwg(bld_height, ver_to_hor, bld_density, urban_road_volumetric_heat_c
         epw_path=epw_path, bldheight=bld_height, blddensity=bld_density, vertohor=ver_to_hor, zone='4B',
         treecover=0, grasscover=0, bld=bld, ref_bem_vector=ref_bem_vector,
         ref_sch_vector=ref_sch_vector, month=2, day=3, sensanth=sensible_anthropogenic_heat, nday=7, dtsim=180, albroad=road_albedo,
-        new_epw_name="SIMULATION8.epw",
+        new_epw_name="simulation4.epw",
         charlength=1000,  albveg=0.3, vegend=10, vegstart=3, kroad=urban_road_thermal_conductivity,
         croad=urban_road_volumetric_heat_capacity,
         c_exch=0.5, h_mix=0.5, h_ubl1=750, h_ubl2=75, c_circ=1, maxday=200, maxnight=50
@@ -229,7 +235,7 @@ def evaluate_epw():
                        float(params[5]), float(params[6])
                        )
             pd_epw_sens, _ = pvlib.iotools.read_epw(
-                base_path + "data\\SIMULATION8.epw")
+                os.path.join(base_path, intermediate_epw_path))
             base_epw, _ = pvlib.iotools.read_epw(epw_path)
 
             indexes = range(793, 793 + (7 * 24))
@@ -374,7 +380,7 @@ Si_UHII = sobol.analyze(problem, UHII_Y)
 print(str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10))
 
 lines = [str(Si_UHII), str(Si_Temp), str(Si_CDD), str(Si_HDD), str(Si_HDD10)]
-with open(base_path + 'txtexport\\sobol-weekly-4-25-uc-w.txt', 'w') as f:
+with open(base_path + '\\txtexport\\sobol-weekly-6-16-uc-w.txt', 'w') as f:
     for line in lines:
         f.write(line)
         f.write('\n')
@@ -403,4 +409,4 @@ data = {
 df = pd.DataFrame(data)
 
 
-df.to_csv(base_path + "csvexport\\sobol-weekly-4-25-uc-w.csv")
+df.to_excel(base_path + "\\csvexport\\sobol-weekly-6-16-uc-w.xlsx")

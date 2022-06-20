@@ -601,7 +601,7 @@ data = {
 }
 
 df = pd.DataFrame(data)
-df.to_csv(base_path + "\\csvexport\\sobol-hourly-6-16-bc-w-S1.csv")
+df.to_excel(base_path + "\\csvexport\\sobol-hourly-6-16-bc-w-S1.xlsx")
 
 for k in range(0, 24):
     for l in range(0, 16):
@@ -628,7 +628,7 @@ data = {
 }
 
 df = pd.DataFrame(data)
-df.to_csv(base_path + "\\csvexport\\sobol-hourly-6-16-bc-w-ST.csv")
+df.to_excel(base_path + "\\csvexport\\sobol-hourly-6-16-bc-w-ST.xlsx")
 
 
 Si_CDD = sobol.analyze(problem, CDD_Y)

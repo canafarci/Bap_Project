@@ -12,7 +12,6 @@ import pandas as pd
 import os
 
 base_path = os.getcwd()
-base_path = "E:\\ARCHIVE\\BAP\\__Project\\"
 
 folder_path = "data/TUR_Ankara.171280_IWEC.epw"
 intermediate_epw_path = "data/simulation2h.epw"
@@ -201,7 +200,7 @@ problem = {
 
 # endregion
 
-param_values = saltelli.sample(problem, 1400)  # 1400
+param_values = saltelli.sample(problem, 1)  # 1400
 
 # region CSV index lists definition -------------------------
 max_length = len(param_values)
@@ -468,7 +467,7 @@ data = {
 }
 
 df = pd.DataFrame(data)
-df.to_csv(base_path + "\\csvexport\\sobol-hourly-6-16-uc-w-S1.csv")
+df.to_excel(base_path + "\\csvexport\\sobol-hourly-6-16-uc-w-S1.xlsx")
 
 for k in range(0, 24):
     for l in range(0, 7):
@@ -485,7 +484,7 @@ data = {
 }
 
 df = pd.DataFrame(data)
-df.to_csv(base_path + "\\csvexport\\sobol-hourly-6-16-uc-w-ST.csv")
+df.to_excel(base_path + "\\csvexport\\sobol-hourly-6-16-uc-w-ST.xlsx")
 
 
 Si_CDD = sobol.analyze(problem, CDD_Y)
