@@ -15,6 +15,7 @@ import os
 # 3 FEBRUARY
 
 base_path = os.getcwd()
+base_path = "E:\\ARCHIVE\\BAP\\__Project"
 folder_path = "data/TUR_Ankara.171280_IWEC.epw"
 intermediate_epw_path = "data/simulation3.epw"
 epw_path = os.path.join(base_path, folder_path)

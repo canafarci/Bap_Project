@@ -12,6 +12,8 @@ import pandas as pd
 import os
 
 base_path = os.getcwd()
+base_path = "E:\\ARCHIVE\\BAP\\__Project"
+
 
 folder_path = "data/TUR_Ankara.171280_IWEC.epw"
 intermediate_epw_path = "data/simulation1h.epw"
@@ -200,7 +202,7 @@ problem = {
 
 # endregion
 
-param_values = saltelli.sample(problem, 1)  # 1400
+param_values = saltelli.sample(problem, 1400)  # 1400
 
 # region CSV index lists definition -------------------------
 max_length = len(param_values)

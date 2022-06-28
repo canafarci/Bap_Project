@@ -4,10 +4,10 @@ import numpy as np
 from math import nan
 import pandas as pd
 
-base_path = "E:\\ARCHIVE\\BAP\\__Project\\csvexport\\"
+base_path = "E:\\ARCHIVE\\BAP\\__Project\\csvexport\\old1\\"
 
 
-df = pd.read_csv(base_path + "sobol-hourly-3-10-uc-w-ST.csv", encoding='latin-1')
+df = pd.read_csv(base_path + "sobol-hourly-5-29-uc-w-ST.csv", encoding='latin-1')
 df = df.iloc[: , 1:]
 # Seaborn setting
 sns.set(style='whitegrid', rc={"grid.linewidth": 0.1})
